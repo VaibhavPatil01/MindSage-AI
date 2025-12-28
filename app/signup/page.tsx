@@ -8,7 +8,7 @@ import { Container } from "@/components/ui/container";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Mail, User, Lock } from "lucide-react";
-// import { registerUser } from "@/lib/api/auth";
+import { registerUser } from "@/lib/api/auth";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function SignupPage() {
     }
     setLoading(true);
     try {
-    //   await registerUser(name, email, password);
+      await registerUser(name, email, password);
       router.push("/login");
     } catch (err: any) {
       setError(err.message || "Signup failed. Please try again.");

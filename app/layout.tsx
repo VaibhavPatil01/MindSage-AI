@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-// import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/components/providers";
 
 // Initialize the fonts
@@ -30,7 +30,7 @@ export default function RootLayout({
           <Header />
           <main>{children}</main>
           <Footer />
-          {/* <Toaster /> */}
+          <Toaster />
         </Providers>
       </body>
     </html>

@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// import { loginUser } from "@/lib/api/auth";
+import { loginUser } from "@/lib/api/auth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Lock, Mail } from "lucide-react";
 import { Container } from "@/components/ui/container";
-// import { useSession } from "@/lib/contexts/session-context";
+import { useSession } from "@/lib/contexts/session-context";
 
 export default function LoginPage() {
   const router = useRouter();
-//   const { checkSession } = useSession();
+  const { checkSession } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,13 +24,13 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-    //   const response = await loginUser(email, password);
+      const response = await loginUser(email, password);
 
       // Store the token in localStorage
-    //   localStorage.setItem("token", response.token);
+      localStorage.setItem("token", response.token);
 
       // Update session state
-    //   await checkSession();
+      await checkSession();
 
       // Wait for state to update before redirecting
       await new Promise((resolve) => setTimeout(resolve, 100));
