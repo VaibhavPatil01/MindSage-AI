@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader2, LucideProps } from "lucide-react";
 
 export const Icons = {
