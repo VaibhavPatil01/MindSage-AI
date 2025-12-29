@@ -1,6 +1,8 @@
+// mindsageai/app/therapy/[sessionId]/page.tsx
+
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, use } from "react"; // Add 'use' import
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,8 +91,11 @@ const glowAnimation = {
 
 const COMPLETION_THRESHOLD = 5;
 
-export default function TherapyPage() {
-  const params = useParams();
+export default function TherapyPage({ params }: { params: Promise<{ sessionId: string }> }) {
+  // Use the 'use' hook to unwrap the params Promise
+  const unwrappedParams = use(params);
+  const sessionIdFromParams = unwrappedParams.sessionId;
+  
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -103,37 +108,117 @@ export default function TherapyPage() {
   const [isChatPaused, setIsChatPaused] = useState(false);
   const [showNFTCelebration, setShowNFTCelebration] = useState(false);
   const [isCompletingSession, setIsCompletingSession] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(
-    params.sessionId as string
-  );
+  
+  // Use state for sessionId to handle both param and created sessions
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
+
+  // Initialize sessionId from params
+  useEffect(() => {
+    if (sessionIdFromParams && sessionIdFromParams !== "undefined" && sessionIdFromParams !== "null") {
+      console.log("[Page] Setting sessionId from params:", sessionIdFromParams);
+      setSessionId(sessionIdFromParams);
+    } else {
+      console.log("[Page] Invalid sessionId from params:", sessionIdFromParams);
+    }
+  }, [sessionIdFromParams]);
+
+  // Helper function to load chat history with better error handling
+  const loadChatHistory = async (sessionId: string): Promise<ChatMessage[]> => {
+    try {
+      console.log(`[Page] Loading chat history for session: ${sessionId}`);
+      
+      if (!sessionId || sessionId === "undefined" || sessionId === "null") {
+        console.error(`[Page] Invalid sessionId: ${sessionId}`);
+        return [];
+      }
+      
+      const history = await getChatHistory(sessionId);
+      
+      console.log(`[Page] Raw history received:`, {
+        type: typeof history,
+        isArray: Array.isArray(history),
+        length: Array.isArray(history) ? history.length : 'N/A'
+      });
+      
+      if (Array.isArray(history)) {
+        // Format messages properly
+        const formattedHistory = history.map((msg: any, index: number) => ({
+          role: msg.role || (msg.sender === 'user' ? 'user' : 'assistant'),
+          content: msg.content || msg.text || msg.message || "",
+          timestamp: new Date(msg.timestamp || Date.now()),
+          metadata: msg.metadata || (msg.analysis ? { analysis: msg.analysis } : undefined),
+          _id: msg._id || `msg-${index}`,
+        }));
+        
+        console.log(`[Page] Formatted ${formattedHistory.length} messages`);
+        return formattedHistory;
+      } else {
+        console.error(`[Page] History is not an array:`, history);
+        return [];
+      }
+    } catch (error) {
+      console.error(`[Page] Error loading chat history:`, error);
+      
+      // Check if it's a specific error
+      if (error instanceof Error) {
+        if (error.message.includes("404") || error.message.includes("not found")) {
+          console.log(`[Page] Session ${sessionId} not found`);
+          // Return empty array - the session might not exist
+          return [];
+        }
+      }
+      
+      // Return empty array to prevent breaking
+      return [];
+    }
+  };
 
   const handleNewSession = async () => {
     try {
       setIsLoading(true);
-      const newSessionId = await createChatSession();
-      console.log("New session created:", newSessionId);
+      console.log("[Page] Creating new chat session...");
+      
+      const newSession = await createChatSession();
+      console.log("[Page] New session created:", newSession);
+      
+      const newSessionId = newSession.sessionId || newSession.id;
+      if (!newSessionId) {
+        throw new Error("No session ID returned from createChatSession");
+      }
 
       // Update sessions list immediately
-      const newSession: ChatSession = {
+      const sessionData: ChatSession = {
+        id: newSession.id || newSessionId,
         sessionId: newSessionId,
+        title: newSession.title || "New Chat",
+        createdAt: newSession.createdAt || new Date(),
+        updatedAt: newSession.updatedAt || newSession.createdAt || new Date(),
+        messageCount: 0,
         messages: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       };
 
       // Update all state in one go
-      setSessions((prev) => [newSession, ...prev]);
+      setSessions((prev) => [sessionData, ...prev]);
       setSessionId(newSessionId);
       setMessages([]);
 
       // Update URL without refresh
       window.history.pushState({}, "", `/therapy/${newSessionId}`);
-
-      // Force a re-render of the chat area
-      setIsLoading(false);
+      
+      console.log("[Page] New session setup complete");
     } catch (error) {
-      console.error("Failed to create new session:", error);
+      console.error("[Page] Failed to create new session:", error);
+      
+      // Show error to user
+      setMessages([
+        {
+          role: "assistant",
+          content: "I couldn't create a new session. Please try again.",
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -141,47 +226,70 @@ export default function TherapyPage() {
   // Initialize chat session and load history
   useEffect(() => {
     const initChat = async () => {
+      // Don't run if we don't have a sessionId yet
+      if (!sessionId) {
+        console.log("[Page] No sessionId yet, waiting...");
+        return;
+      }
+      
       try {
         setIsLoading(true);
-        if (!sessionId || sessionId === "new") {
-          console.log("Creating new chat session...");
-          const newSessionId = await createChatSession();
-          console.log("New session created:", newSessionId);
-          setSessionId(newSessionId);
-          window.history.pushState({}, "", `/therapy/${newSessionId}`);
+        console.log(`[Page] Initializing chat with sessionId: ${sessionId}`);
+        
+        // Check if sessionId is "new" or invalid
+        if (sessionId === "new" || sessionId === "undefined" || sessionId === "null") {
+          console.log("[Page] Creating new chat session...");
+          const newSession = await createChatSession();
+          const newSessionId = newSession.sessionId || newSession.id;
+          if (newSessionId) {
+            console.log("[Page] New session created:", newSessionId);
+            setSessionId(newSessionId);
+            window.history.pushState({}, "", `/therapy/${newSessionId}`);
+            setMessages([]); // Clear messages for new session
+          } else {
+            throw new Error("Failed to get session ID from createChatSession");
+          }
         } else {
-          console.log("Loading existing chat session:", sessionId);
-          try {
-            const history = await getChatHistory(sessionId);
-            console.log("Loaded chat history:", history);
-            if (Array.isArray(history)) {
-              const formattedHistory = history.map((msg) => ({
-                ...msg,
-                timestamp: new Date(msg.timestamp),
-              }));
-              console.log("Formatted history:", formattedHistory);
-              setMessages(formattedHistory);
-            } else {
-              console.error("History is not an array:", history);
-              setMessages([]);
-            }
-          } catch (historyError) {
-            console.error("Error loading chat history:", historyError);
+          console.log("[Page] Loading existing chat session:", sessionId);
+          
+          // Use the helper function
+          const history = await loadChatHistory(sessionId);
+          
+          console.log("[Page] Loaded history:", history.length, "messages");
+          
+          if (history.length > 0) {
+            setMessages(history);
+          } else {
+            console.log("[Page] No messages found, showing empty chat");
+            // If no messages but we have a valid sessionId, keep it
             setMessages([]);
           }
         }
       } catch (error) {
-        console.error("Failed to initialize chat:", error);
-        setMessages([
-          {
-            role: "assistant",
-            content:
-              "I apologize, but I'm having trouble loading the chat session. Please try refreshing the page.",
-            timestamp: new Date(),
-          },
-        ]);
+        console.error("[Page] Failed to initialize chat:", error);
+        
+        // Show user-friendly error and create new session
+        try {
+          const newSession = await createChatSession();
+          const newSessionId = newSession.sessionId || newSession.id;
+          if (newSessionId) {
+            setSessionId(newSessionId);
+            window.history.pushState({}, "", `/therapy/${newSessionId}`);
+          }
+          
+          setMessages([
+            {
+              role: "assistant",
+              content: "Welcome! I'm here to support you. How are you feeling today?",
+              timestamp: new Date(),
+            },
+          ]);
+        } catch (createError) {
+          console.error("[Page] Failed to create fallback session:", createError);
+        }
       } finally {
         setIsLoading(false);
+        console.log("[Page] Chat initialization complete");
       }
     };
 
@@ -192,10 +300,13 @@ export default function TherapyPage() {
   useEffect(() => {
     const loadSessions = async () => {
       try {
+        console.log("[Page] Loading all chat sessions...");
         const allSessions = await getAllChatSessions();
+        console.log(`[Page] Loaded ${allSessions.length} sessions`);
         setSessions(allSessions);
       } catch (error) {
-        console.error("Failed to load sessions:", error);
+        console.error("[Page] Failed to load sessions:", error);
+        // Don't show error to user, just log it
       }
     };
 
@@ -218,15 +329,15 @@ export default function TherapyPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted");
+    console.log("[Page] Form submitted");
     const currentMessage = message.trim();
-    console.log("Current message:", currentMessage);
-    console.log("Session ID:", sessionId);
-    console.log("Is typing:", isTyping);
-    console.log("Is chat paused:", isChatPaused);
+    console.log("[Page] Current message:", currentMessage);
+    console.log("[Page] Session ID:", sessionId);
+    console.log("[Page] Is typing:", isTyping);
+    console.log("[Page] Is chat paused:", isChatPaused);
 
     if (!currentMessage || isTyping || isChatPaused || !sessionId) {
-      console.log("Submission blocked:", {
+      console.log("[Page] Submission blocked:", {
         noMessage: !currentMessage,
         isTyping,
         isChatPaused,
@@ -255,15 +366,32 @@ export default function TherapyPage() {
         return;
       }
 
-      console.log("Sending message to API...");
+      console.log("[Page] Sending message to API...");
+      
       // Send message to API
       const response = await sendChatMessage(sessionId, currentMessage);
-      console.log("Raw API response:", response);
+      console.log("[Page] Raw API response:", response);
+
+      // Handle the response - check if it's an error
+      if (response && typeof response === 'object' && 'error' in response) {
+        console.error("[Page] API returned error:", response);
+        
+        // Add error message
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "I'm having trouble connecting right now. Please try again in a moment.",
+            timestamp: new Date(),
+          },
+        ]);
+        setIsTyping(false);
+        return;
+      }
 
       // Parse the response if it's a string
-      const aiResponse =
-        typeof response === "string" ? JSON.parse(response) : response;
-      console.log("Parsed AI response:", aiResponse);
+      const aiResponse = typeof response === "string" ? JSON.parse(response) : response;
+      console.log("[Page] Parsed AI response:", aiResponse);
 
       // Add AI response with metadata
       const assistantMessage: ChatMessage = {
@@ -290,20 +418,19 @@ export default function TherapyPage() {
         },
       };
 
-      console.log("Created assistant message:", assistantMessage);
+      console.log("[Page] Created assistant message:", assistantMessage);
 
       // Add the message immediately
       setMessages((prev) => [...prev, assistantMessage]);
       setIsTyping(false);
       scrollToBottom();
     } catch (error) {
-      console.error("Error in chat:", error);
+      console.error("[Page] Error in chat:", error);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            "I apologize, but I'm having trouble connecting right now. Please try again in a moment.",
+          content: "I apologize, but I'm having trouble connecting right now. Please try again in a moment.",
           timestamp: new Date(),
         },
       ]);
@@ -315,10 +442,17 @@ export default function TherapyPage() {
     setMounted(true);
   }, []);
 
-  if (!mounted || isLoading) {
+  // Show loading while initializing
+  if (!mounted || (isLoading && !sessionId)) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mb-4" />
+        <p className="text-muted-foreground">
+          {isLoading ? "Loading chat..." : "Initializing..."}
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Session ID: {sessionId || "creating new..."}
+        </p>
       </div>
     );
   }
@@ -377,17 +511,28 @@ export default function TherapyPage() {
   };
 
   const handleSuggestedQuestion = async (text: string) => {
+    console.log("[Page] Handling suggested question:", text);
+    
     if (!sessionId) {
-      const newSessionId = await createChatSession();
-      setSessionId(newSessionId);
-      router.push(`/therapy/${newSessionId}`);
+      console.log("[Page] No session ID, creating new session...");
+      try {
+        await handleNewSession();
+        // Wait a moment for the session to be created
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error("[Page] Failed to create session:", error);
+        return;
+      }
     }
 
     setMessage(text);
+    // Trigger the form submission
     setTimeout(() => {
-      const event = new Event("submit") as unknown as React.FormEvent;
-      handleSubmit(event);
-    }, 0);
+      const fakeEvent = {
+        preventDefault: () => {},
+      } as React.FormEvent;
+      handleSubmit(fakeEvent);
+    }, 50);
   };
 
   const handleCompleteSession = async () => {
@@ -403,26 +548,70 @@ export default function TherapyPage() {
   };
 
   const handleSessionSelect = async (selectedSessionId: string) => {
-    if (selectedSessionId === sessionId) return;
+    // Don't do anything if we're already on this session
+    if (selectedSessionId === sessionId) {
+      console.log(`[Page] Already on session ${selectedSessionId}`);
+      return;
+    }
 
+    console.log(`[Page] Switching to session: ${selectedSessionId}`);
+    
     try {
       setIsLoading(true);
-      const history = await getChatHistory(selectedSessionId);
-      if (Array.isArray(history)) {
-        const formattedHistory = history.map((msg) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp),
-        }));
-        setMessages(formattedHistory);
+      
+      // First, check if this session exists in our sessions list
+      const sessionExists = sessions.some(s => s.sessionId === selectedSessionId);
+      
+      if (!sessionExists) {
+        console.log(`[Page] Session ${selectedSessionId} not found in sessions list`);
+        // Show a message that the session might not exist
+        setMessages([
+          {
+            role: "assistant",
+            content: "This session might not exist or you don't have access to it.",
+            timestamp: new Date(),
+          },
+        ]);
         setSessionId(selectedSessionId);
         window.history.pushState({}, "", `/therapy/${selectedSessionId}`);
+        setIsLoading(false);
+        return;
       }
+      
+      // Load chat history for the selected session
+      const history = await loadChatHistory(selectedSessionId);
+      
+      console.log(`[Page] Loaded ${history.length} messages for session ${selectedSessionId}`);
+      
+      // Update the URL and state - ALWAYS switch to the selected session
+      setSessionId(selectedSessionId);
+      window.history.pushState({}, "", `/therapy/${selectedSessionId}`);
+      
+      // Set the messages (even if empty array)
+      setMessages(history);
+      
+      console.log(`[Page] Switched to session ${selectedSessionId}`);
     } catch (error) {
-      console.error("Failed to load session:", error);
+      console.error("[Page] Failed to load session:", error);
+      
+      // Show error message to user
+      setMessages([
+        {
+          role: "assistant",
+          content: "I couldn't load that chat session. The session might not exist.",
+          timestamp: new Date(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Get display session ID - handle null/undefined
+  const displaySessionId = sessionId || "new";
+  const displaySessionIdShort = typeof displaySessionId === 'string' 
+    ? displaySessionId.slice(0, 8)
+    : "new";
 
   return (
     <div className="relative max-w-7xl mx-auto px-4">
@@ -461,51 +650,60 @@ export default function TherapyPage() {
             </Button>
           </div>
 
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4  overflow-hidden">
             <div className="space-y-4">
-              {sessions.map((session) => (
-                <div
-                  key={session.sessionId}
-                  className={cn(
-                    "p-3 rounded-lg text-sm cursor-pointer hover:bg-primary/5 transition-colors",
-                    session.sessionId === sessionId
-                      ? "bg-primary/10 text-primary"
-                      : "bg-secondary/10"
-                  )}
-                  onClick={() => handleSessionSelect(session.sessionId)}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <MessageSquare className="w-4 h-4" />
-                    <span className="font-medium">
-                      {session.messages[0]?.content.slice(0, 30) || "New Chat"}
-                    </span>
-                  </div>
-                  <p className="line-clamp-2 text-muted-foreground">
-                    {session.messages[session.messages.length - 1]?.content ||
-                      "No messages yet"}
-                  </p>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-muted-foreground">
-                      {session.messages.length} messages
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {(() => {
-                        try {
-                          const date = new Date(session.updatedAt);
-                          if (isNaN(date.getTime())) {
+              {sessions.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p>No chat sessions yet</p>
+                  <p className="text-sm">Start a new chat to begin</p>
+                </div>
+              ) : (
+                sessions.map((session) => (
+                  <div
+                    key={session.sessionId}
+                    className={cn(
+                      "p-3  rounded-lg text-sm cursor-pointer hover:bg-primary/5 transition-colors",
+                      session.sessionId === sessionId
+                        ? "bg-primary/10 text-primary "
+                        : "bg-secondary/10 "
+                    )}
+                    onClick={() => handleSessionSelect(session.sessionId)}
+                  >
+                    <div className="flex items-center  gap-2 mb-1">
+                      <MessageSquare className="w-4 h-4" />
+                      <span className="font-medium">
+                        {session.title || session.messages[0]?.content?.slice(0, 30) || "New Chat"}
+                      </span>
+                    </div>
+                    <p className="line-clamp-2 text-muted-foreground">
+                      {session.messages && session.messages.length > 0 
+                        ? session.messages[session.messages.length - 1]?.content || "No messages yet"
+                        : "No messages yet"}
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-xs text-muted-foreground">
+                        {session.messageCount || session.messages?.length || 0} messages
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {(() => {
+                          try {
+                            const date = new Date(session.updatedAt || session.createdAt || Date.now());
+                            if (isNaN(date.getTime())) {
+                              return "Just now";
+                            }
+                            return formatDistanceToNow(date, {
+                              addSuffix: true,
+                            });
+                          } catch (error) {
                             return "Just now";
                           }
-                          return formatDistanceToNow(date, {
-                            addSuffix: true,
-                          });
-                        } catch (error) {
-                          return "Just now";
-                        }
-                      })()}
-                    </span>
+                        })()}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </ScrollArea>
         </div>
@@ -521,13 +719,13 @@ export default function TherapyPage() {
               <div>
                 <h2 className="font-semibold">AI Therapist</h2>
                 <p className="text-sm text-muted-foreground">
-                  {messages.length} messages
+                  {messages.length} messages • Session: {displaySessionIdShort}...
                 </p>
               </div>
             </div>
           </div>
 
-          {messages.length === 0 ? (
+          {messages.length === 0 && !isLoading ? (
             // Welcome screen with suggested questions
             <div className="flex-1 flex items-center justify-center p-4">
               <div className="max-w-2xl w-full space-y-8">
@@ -592,9 +790,10 @@ export default function TherapyPage() {
             <div className="flex-1 overflow-y-auto scroll-smooth">
               <div className="max-w-3xl mx-auto">
                 <AnimatePresence initial={false}>
-                  {messages.map((msg) => (
+                  {messages.map((msg, index) => (
+                    
                     <motion.div
-                      key={msg.timestamp.toISOString()}
+                      key={msg.timestamp?.toISOString() + msg.content?.slice(0, 10) + index}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
@@ -631,7 +830,7 @@ export default function TherapyPage() {
                             )}
                           </div>
                           <div className="prose prose-sm dark:prose-invert leading-relaxed">
-                            <ReactMarkdown>{msg.content}</ReactMarkdown>
+                            <ReactMarkdown>{msg.content || ""}</ReactMarkdown>
                           </div>
                           {msg.metadata?.goal && (
                             <p className="text-xs text-muted-foreground mt-2">
@@ -657,7 +856,11 @@ export default function TherapyPage() {
                     </div>
                     <div className="flex-1 space-y-2">
                       <p className="font-medium text-sm">AI Therapist</p>
-                      <p className="text-sm text-muted-foreground">Typing...</p>
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <div className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
                     </div>
                   </motion.div>
                 )}

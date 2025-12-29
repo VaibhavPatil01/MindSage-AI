@@ -2,11 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/index.js",
+    "dev": "nodemon --exec tsx src/index.ts",
     "build": "tsc",
-    "dev": "nodemon src/index.ts"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -30,5 +30,13 @@
     "openai": "^6.15.0",
     "react-confetti": "^6.4.0",
     "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0"
   }
 }
