@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+
 import {
   Brain,
   Heart,
@@ -17,10 +18,18 @@ import {
   Lightbulb,
   Lock,
   MessageSquareHeart,
+  Star,
+  Quote,
+  MapPin,
+  Calendar,
+  CheckCircle,
+  ThumbsUp,
+  Smile,
 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
 import { useState, useEffect } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -30,6 +39,8 @@ import {
 } from "@/components/ui/dialog";
 import React from "react";
 import { Ripple } from "@/components/ui/ripple";
+import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Home() {
   const emotions = [
@@ -47,7 +58,7 @@ export default function Home() {
 
   const welcomeSteps = [
     {
-      title: "Hi, I'm Aura 👋",
+      title: "Hi, I'm MindSage AI 👋",
       description:
         "Your AI companion for emotional well-being. I'm here to provide a safe, judgment-free space for you to express yourself.",
       icon: Waves,
@@ -66,6 +77,30 @@ export default function Home() {
     },
   ];
 
+  const testimonials = [
+    {
+      name: "Vaibhav Patil",
+      initials: "VP",
+      role: "Software Engineer",
+      feedback: "The platform has been incredibly supportive during stressful periods. It feels like having a thoughtful companion.",
+      delay: 0.1,
+    },
+    {
+      name: "Shraddha Patil",
+      initials: "SP",
+      role: "Clinical Psychologist",
+      feedback: "Impressed by the thoughtful approach to mental wellness. The conversations feel genuine and supportive.",
+      delay: 0.2,
+    },
+    {
+      name: "Shreyan Patil",
+      initials: "SP",
+      role: "Student",
+      feedback: "Privacy was my main concern, and this platform handles it perfectly. I feel safe sharing openly.",
+      delay: 0.3,
+    },
+  ];
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -73,36 +108,36 @@ export default function Home() {
   const currentEmotion =
     emotions.find((em) => Math.abs(emotion - em.value) < 15) || emotions[2];
 
-  const features = [
-    {
-      icon: HeartPulse,
-      title: "24/7 Support",
-      description: "Always here to listen and support you, any time of day",
-      color: "from-rose-500/20",
-      delay: 0.2,
-    },
-    {
-      icon: Lightbulb,
-      title: "Smart Insights",
-      description: "Personalized guidance powered by emotional intelligence",
-      color: "from-amber-500/20",
-      delay: 0.4,
-    },
-    {
-      icon: Lock,
-      title: "Private & Secure",
-      description: "Your conversations are always confidential and encrypted",
-      color: "from-emerald-500/20",
-      delay: 0.6,
-    },
-    {
-      icon: MessageSquareHeart,
-      title: "Evidence-Based",
-      description: "Therapeutic techniques backed by clinical research",
-      color: "from-blue-500/20",
-      delay: 0.8,
-    },
-  ];
+    const features = [
+      {
+        icon: HeartPulse,
+        title: "Continuous Availability",
+        description: "Consistent emotional support accessible whenever you need meaningful conversation",
+        color: "from-rose-500/20",
+        delay: 0.2,
+      },
+      {
+        icon: Lightbulb,
+        title: "Cognitive Insights",
+        description: "Intelligent analysis that identifies patterns in your emotional landscape and thought processes",
+        color: "from-amber-500/20",
+        delay: 0.4,
+      },
+      {
+        icon: Lock,
+        title: "Verified Confidentiality",
+        description: "End-to-end encrypted dialogues with zero-knowledge architecture ensuring absolute privacy",
+        color: "from-emerald-500/20",
+        delay: 0.6,
+      },
+      {
+        icon: MessageSquareHeart,
+        title: "Research-Grounded Methods",
+        description: "Therapeutic approaches validated by psychological studies and clinical effectiveness data",
+        color: "from-blue-500/20",
+        delay: 0.8,
+      },
+    ];
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
@@ -118,6 +153,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-background/80 backdrop-blur-3xl" />
         </div>
         <Ripple className="opacity-60" />
+        
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -128,7 +164,7 @@ export default function Home() {
           {/* Enhanced badge with subtle animation */}
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm hover:border-primary/40 transition-all duration-300">
             <Waves className="w-4 h-4 animate-wave text-primary" />
-            <span className="relative text-foreground/90 dark:text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
+            <span className="relative text-foreground/90 dark:text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ">
               Your AI Agent Mental Health Companion
             </span>
           </div>
@@ -186,7 +222,7 @@ export default function Home() {
             {/* Enhanced slider with dynamic gradient */}
             <div className="relative px-2">
               <div
-                className={`absolute inset-0 bg-gradient-to-r ${currentEmotion.color} to-transparent blur-2xl -z-10 transition-all duration-500`}
+                className={`absolute inset-0 bg-linear-to-r ${currentEmotion.color} to-transparent blur-2xl -z-10 transition-all duration-500`}
               />
               <Slider
                 value={[emotion]}
@@ -215,7 +251,7 @@ export default function Home() {
             <Button
               size="lg"
               onClick={() => setShowDialog(true)}
-              className="relative group h-12 px-8 rounded-full bg-gradient-to-r from-primary via-primary/90 to-secondary hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500 hover:shadow-xl hover:shadow-primary/30"
+              className="relative group h-12 px-8 rounded-full bg-gradient-to-r from-primary via-primary/90 to-secondary hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500 hover:shadow-xl hover:shadow-primary/30 cursor-pointer"
             >
               <span className="relative z-10 font-medium flex items-center gap-2">
                 Begin Your Journey
@@ -227,16 +263,7 @@ export default function Home() {
         </motion.div>
 
         {/* Enhanced scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        >
-          <div className="w-6 h-10 rounded-full border-2 border-primary/20 flex items-start justify-center p-1 hover:border-primary/40 transition-colors duration-300">
-            <div className="w-1 h-2 rounded-full bg-primary animate-scroll" />
-          </div>
-        </motion.div>
+        
       </section>
 
       {/* Enhanced Features Grid */}
@@ -245,8 +272,8 @@ export default function Home() {
 
         <div className="max-w-6xl mx-auto">
           <motion.div className="text-center mb-16 space-y-4 text-white ">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
-              How Aura Helps You
+            <h2 className="text-3xl font-bold bg-linear-to-r from-primary/90 to-primary bg-clip-text text-transparent dark:text-primary/90">
+              How MindSage AI Helps You
             </h2>
             <p className="text-foreground dark:text-foreground/95 max-w-2xl mx-auto font-medium text-lg">
               Experience a new kind of emotional support, powered by empathetic
@@ -289,6 +316,87 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <section className="relative py-16 px-4">
+  <div className="max-w-6xl mx-auto">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      viewport={{ once: true }}
+      className="text-center mb-12"
+    >
+      
+      <h2 className="text-3xl font-bold mb-4 text-primary">
+        What People Are Saying
+      </h2>
+      <p className="text-muted-foreground max-w-xl mx-auto">
+        Hear from individuals who found support through our platform
+      </p>
+    </motion.div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {testimonials.map((testimonial, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: testimonial.delay, duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <Card className="h-full hover:shadow-md transition-shadow duration-300">
+            <div className="p-6">
+              {/* User info */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary font-medium">
+                    {testimonial.initials}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="font-medium">
+                    {testimonial.name}
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {testimonial.role}
+                  </p>
+                </div>
+              </div>
+
+              {/* Feedback */}
+              <p className="text-foreground/80 mb-4">
+                "{testimonial.feedback}"
+              </p>
+
+              {/* Simple rating */}
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-4 h-4 text-amber-400 fill-amber-400"
+                  />
+                ))}
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+
+    {/* Simple stat */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.5 }}
+      viewport={{ once: true }}
+      className="text-center mt-10"
+    >
+      <p className="text-muted-foreground">
+        Trusted by <span className="text-primary font-semibold">2,500+</span> members worldwide
+      </p>
+    </motion.div>
+  </div>
+</section>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg">

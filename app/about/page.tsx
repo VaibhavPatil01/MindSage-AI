@@ -7,21 +7,21 @@ import { Heart, Target, Sparkles } from "lucide-react";
 const missions = [
   {
     icon: <Heart className="w-8 h-8 text-primary" />,
-    title: "Our Mission",
+    title: "Our Purpose",
     description:
-      "To democratize access to mental health support through ethical AI and blockchain technology, making quality therapeutic care available to everyone, everywhere, at any time.",
+      "To transform mental wellness accessibility through conversational AI and distributed ledger systems, creating therapeutic support that's both scalable and deeply personal for individuals worldwide.",
   },
   {
     icon: <Target className="w-8 h-8 text-primary" />,
-    title: "Our Vision",
+    title: "Our Aspiration",
     description:
-      "A world where mental health support is accessible, private, and personalized, powered by trusted AI agents and secured by blockchain technology.",
+      "Creating a future where emotional wellbeing is supported by intelligent systems that understand human complexity while maintaining absolute confidentiality and data sovereignty.",
   },
   {
     icon: <Sparkles className="w-8 h-8 text-primary" />,
-    title: "Our Values",
+    title: "Our Principles",
     description:
-      "Privacy, Innovation, Empathy, and Trust form the cornerstone of our platform, ensuring the highest standards of care and security.",
+      "User sovereignty, technological integrity, compassionate design, and transparent operations guide every aspect of our platform's development and user experience.",
   },
 ];
 
@@ -35,12 +35,12 @@ export default function AboutPage() {
         transition={{ duration: 0.5 }}
         className="text-center mb-20"
       >
-        <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-          About Aura3.0
+        <h1 className="text-4xl font-bold mb-6 bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          The MindSage Approach
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          We're revolutionizing mental health support by combining cutting-edge
-          AI technology with the security and transparency of blockchain.
+          We're redefining emotional support by merging sophisticated conversational intelligence 
+          with the reliability and privacy assurances of decentralized technology frameworks.
         </p>
       </motion.div>
 
@@ -53,7 +53,7 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="p-6 text-center h-full bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <Card className="p-6 text-center h-full bg-card/50 backdrop-blur supports-backdrop-filter:bg-background/60">
               <div className="mb-4 flex justify-center">{mission.icon}</div>
               <h3 className="text-xl font-semibold mb-3">{mission.title}</h3>
               <p className="text-muted-foreground">{mission.description}</p>

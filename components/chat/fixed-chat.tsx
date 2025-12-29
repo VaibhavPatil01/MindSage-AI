@@ -18,7 +18,7 @@ export function FixedChat() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hi! I'm Aura. How are you feeling today?",
+      content: "Hi! I'm MindSage AI. How are you feeling today?",
       timestamp: new Date(),
     },
   ]);

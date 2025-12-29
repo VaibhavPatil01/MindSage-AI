@@ -11,56 +11,58 @@ import {
   LineChart,
   Wifi,
   Heart,
+  Sparkles,
+  TrendingUp,
 } from "lucide-react";
 
 const features = [
   {
     icon: <Bot className="w-10 h-10 text-primary" />,
-    title: "AI-Powered Therapy",
+    title: "Intelligent Conversation Partners",
     description:
-      "24/7 access to empathetic AI agents trained in various therapeutic approaches, providing personalized mental health support.",
+      "Our AI companions are specifically designed to engage in meaningful dialogue, offering supportive conversations that adapt to your emotional needs throughout the day.",
   },
   {
     icon: <Shield className="w-10 h-10 text-primary" />,
-    title: "Blockchain Security",
+    title: "Immutable Session Records",
     description:
-      "Your therapy sessions are secured by blockchain technology, ensuring complete privacy and transparent record-keeping.",
+      "Every interaction is permanently recorded on a distributed ledger, creating tamper-proof documentation of your therapeutic progress and insights.",
   },
   {
     icon: <Brain className="w-10 h-10 text-primary" />,
-    title: "Smart Analysis",
+    title: "Contextual Understanding",
     description:
-      "Advanced NLP and emotion detection helps understand your mental state and provide appropriate interventions.",
+      "Our system analyzes conversation patterns and emotional cues to provide responses that reflect deep comprehension of your current state and history.",
   },
   {
     icon: <Activity className="w-10 h-10 text-primary" />,
-    title: "Crisis Detection",
+    title: "Wellness Monitoring System",
     description:
-      "Real-time monitoring and emergency response protocols to ensure your safety during critical situations.",
+      "Continuous assessment of behavioral patterns allows for timely interventions and support when signs of emotional distress are detected.",
   },
   {
     icon: <Wifi className="w-10 h-10 text-primary" />,
-    title: "IoT Integration",
+    title: "Connected Environment Support",
     description:
-      "Connect with smart home devices to create an ambient therapeutic environment that adapts to your needs.",
+      "Synchronize with compatible devices in your living space to create personalized atmospheres that promote calmness and focus during sessions.",
   },
   {
     icon: <LineChart className="w-10 h-10 text-primary" />,
-    title: "Progress Tracking",
+    title: "Growth Visualization",
     description:
-      "Detailed analytics and insights about your mental health journey, with blockchain-verified session records.",
+      "Interactive dashboards display your emotional development over time, highlighting patterns, breakthroughs, and areas for continued focus.",
   },
   {
     icon: <Fingerprint className="w-10 h-10 text-primary" />,
-    title: "Privacy First",
+    title: "Confidentiality Assurance",
     description:
-      "End-to-end encryption and zero-knowledge proofs ensure your data remains completely confidential.",
+      "Multi-layered encryption protocols and privacy-preserving technologies ensure that your personal journey remains accessible only to you.",
   },
   {
     icon: <Heart className="w-10 h-10 text-primary" />,
-    title: "Holistic Care",
+    title: "Integrated Wellness Approach",
     description:
-      "Integration with wearables and health providers for comprehensive mental wellness monitoring.",
+      "Connect with health monitoring tools and professional networks to create a comprehensive picture of your mental and physical wellbeing.",
   },
 ];
 
@@ -77,9 +79,8 @@ export default function FeaturesPage() {
           Platform Features
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Discover how our AI-powered platform revolutionizes mental health
-          support with cutting-edge technology and unwavering privacy
-          protection.
+          Explore how our platform combines advanced technology with human-centric 
+          design to support your mental wellness journey with unprecedented depth and privacy.
         </p>
       </motion.div>
 
@@ -103,21 +104,26 @@ export default function FeaturesPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
-        className="text-center mt-16"
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="text-center mt-20"
       >
-        <h2 className="text-2xl font-semibold mb-4">Ready to Get Started?</h2>
-        <p className="text-muted-foreground mb-8">
-          Join thousands of users benefiting from AI-powered mental health
-          support.
-        </p>
-        <a
-          href="/dashboard"
-          className="inline-flex items-center px-6 py-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          Start Your Journey
-          <Heart className="ml-2 w-5 h-5" />
-        </a>
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-4">
+            Begin Your Personalized Journey
+          </h2>
+          <p className="text-muted-foreground mb-8">
+            Join a community where technology empowers human connection, 
+            and every step forward is celebrated and secured.
+          </p>
+          <a
+            href="/dashboard"
+            className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            <Sparkles className="mr-3 w-5 h-5" />
+            Discover Your Pathway
+            <TrendingUp className="ml-3 w-5 h-5" />
+          </a>
+        </div>
       </motion.div>
     </div>
   );

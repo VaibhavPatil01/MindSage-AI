@@ -614,7 +614,7 @@ export default function TherapyPage({ params }: { params: Promise<{ sessionId: s
     : "new";
 
   return (
-    <div className="relative max-w-7xl mx-auto px-4">
+    <div className="relative max-w-7xl mx-auto px-4  mb-10">
       <div className="flex h-[calc(100vh-4rem)] mt-20 gap-6">
         {/* Sidebar with chat history */}
         <div className="w-80 flex flex-col border-r bg-muted/30">
