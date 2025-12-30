@@ -26,7 +26,7 @@ app.use(helmet());
 
 // 2. CORS - More permissive for debugging
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"],
+  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173", "https://mindsage-ai.onrender.com"],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
