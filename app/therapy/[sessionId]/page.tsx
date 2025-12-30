@@ -91,12 +91,13 @@ const glowAnimation = {
 
 const COMPLETION_THRESHOLD = 5;
 
-export default function TherapyPage({ params }: { params: Promise<{ sessionId: string }> }) {
+export default function TherapyPage() {
   // Use the 'use' hook to unwrap the params Promise
-  const unwrappedParams = use(params);
-  const sessionIdFromParams = unwrappedParams.sessionId;
-  
+  const params = useParams<{ sessionId: string }>();
+  const sessionIdFromParams = params.sessionId;
+
   const router = useRouter();
+
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
