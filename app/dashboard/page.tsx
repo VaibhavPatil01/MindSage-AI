@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
@@ -61,7 +61,6 @@ import { ActivityLogger } from "@/components/activities/activity-logger";
 import { useSession } from "@/lib/contexts/session-context";
 import { getAllChatSessions } from "@/lib/api/chat";
 
-// Add this type definition
 type ActivityLevel = "none" | "low" | "medium" | "high";
 
 interface DayActivity {
@@ -75,7 +74,6 @@ interface DayActivity {
   }[];
 }
 
-// Add this interface near the top with other interfaces
 interface Activity {
   id: string;
   userId: string | null;
@@ -91,7 +89,6 @@ interface Activity {
   updatedAt: Date;
 }
 
-// Add this interface for stats
 interface DailyStats {
   moodScore: number | null;
   completionRate: number;
@@ -100,7 +97,6 @@ interface DailyStats {
   lastUpdated: Date;
 }
 
-// Update the calculateDailyStats function to show correct stats
 const calculateDailyStats = (activities: Activity[]): DailyStats => {
   const today = startOfDay(new Date());
   const todaysActivities = activities.filter((activity) =>
@@ -110,7 +106,6 @@ const calculateDailyStats = (activities: Activity[]): DailyStats => {
     })
   );
 
-  // Calculate mood score (average of today's mood entries)
   const moodEntries = todaysActivities.filter(
     (a) => a.type === "mood" && a.moodScore !== null
   );
@@ -122,19 +117,17 @@ const calculateDailyStats = (activities: Activity[]): DailyStats => {
         )
       : null;
 
-  // Count therapy sessions (all sessions ever)
   const therapySessions = activities.filter((a) => a.type === "therapy").length;
 
   return {
     moodScore: averageMood,
-    completionRate: 100, // Always 100% as requested
-    mindfulnessCount: therapySessions, // Total number of therapy sessions
+    completionRate: 100,
+    mindfulnessCount: therapySessions,
     totalActivities: todaysActivities.length,
     lastUpdated: new Date(),
   };
 };
 
-// Rename the function
 const generateInsights = (activities: Activity[]) => {
   const insights: {
     title: string;
@@ -143,13 +136,11 @@ const generateInsights = (activities: Activity[]) => {
     priority: "low" | "medium" | "high";
   }[] = [];
 
-  // Get activities from last 7 days
   const lastWeek = subDays(new Date(), 7);
   const recentActivities = activities.filter(
     (a) => new Date(a.timestamp) >= lastWeek
   );
 
-  // Analyze mood patterns
   const moodEntries = recentActivities.filter(
     (a) => a.type === "mood" && a.moodScore !== null
   );
@@ -178,7 +169,6 @@ const generateInsights = (activities: Activity[]) => {
     }
   }
 
-  // Analyze activity patterns
   const mindfulnessActivities = recentActivities.filter((a) =>
     ["game", "meditation", "breathing"].includes(a.type)
   );
@@ -202,7 +192,6 @@ const generateInsights = (activities: Activity[]) => {
     }
   }
 
-  // Check activity completion rate
   const completedActivities = recentActivities.filter((a) => a.completed);
   const completionRate =
     recentActivities.length > 0
@@ -228,7 +217,6 @@ const generateInsights = (activities: Activity[]) => {
     });
   }
 
-  // Time pattern analysis
   const morningActivities = recentActivities.filter(
     (a) => new Date(a.timestamp).getHours() < 12
   );
@@ -254,7 +242,6 @@ const generateInsights = (activities: Activity[]) => {
     });
   }
 
-  // Sort insights by priority and return top 3
   return insights
     .sort((a, b) => {
       const priorityOrder = { high: 0, medium: 1, low: 2 };
@@ -269,7 +256,6 @@ export default function Dashboard() {
   const router = useRouter();
   const { user } = useSession();
 
-  // Rename the state variable
   const [insights, setInsights] = useState<
     {
       title: string;
@@ -279,7 +265,6 @@ export default function Dashboard() {
     }[]
   >([]);
 
-  // New states for activities and wearables
   const [activities, setActivities] = useState<Activity[]>([]);
   const [showMoodModal, setShowMoodModal] = useState(false);
   const [showCheckInChat, setShowCheckInChat] = useState(false);
@@ -295,14 +280,12 @@ export default function Dashboard() {
     lastUpdated: new Date(),
   });
 
-  // Add this function to transform activities into day activity format
   const transformActivitiesToDayActivity = (
     activities: Activity[]
   ): DayActivity[] => {
     const days: DayActivity[] = [];
     const today = new Date();
 
-    // Create array for last 28 days
     for (let i = 27; i >= 0; i--) {
       const date = startOfDay(subDays(today, i));
       const dayActivities = activities.filter((activity) =>
@@ -312,7 +295,6 @@ export default function Dashboard() {
         })
       );
 
-      // Determine activity level based on number of activities
       let level: ActivityLevel = "none";
       if (dayActivities.length > 0) {
         if (dayActivities.length <= 2) level = "low";
@@ -335,7 +317,6 @@ export default function Dashboard() {
     return days;
   };
 
-  // Modify the loadActivities function to use a default user ID
   const loadActivities = useCallback(async () => {
     try {
       const userActivities = await getUserActivities("default-user");
@@ -352,32 +333,26 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
-  // Add this effect to update stats when activities change
   useEffect(() => {
     if (activities.length > 0) {
       setDailyStats(calculateDailyStats(activities));
     }
   }, [activities]);
 
-  // Update the effect
   useEffect(() => {
     if (activities.length > 0) {
       setInsights(generateInsights(activities));
     }
   }, [activities]);
 
-  // Add function to fetch daily stats
   const fetchDailyStats = useCallback(async () => {
     try {
-      // Fetch therapy sessions using the chat API
       const sessions = await getAllChatSessions();
 
-      // Fetch today's activities
       const activitiesResponse = await fetch("/api/activities/today");
       if (!activitiesResponse.ok) throw new Error("Failed to fetch activities");
       const activities = await activitiesResponse.json();
 
-      // Calculate mood score from activities
       const moodEntries = activities.filter(
         (a: Activity) => a.type === "mood" && a.moodScore !== null
       );
@@ -394,7 +369,7 @@ export default function Dashboard() {
       setDailyStats({
         moodScore: averageMood,
         completionRate: 100,
-        mindfulnessCount: sessions.length, // Total number of therapy sessions
+        mindfulnessCount: sessions.length,
         totalActivities: activities.length,
         lastUpdated: new Date(),
       });
@@ -403,14 +378,12 @@ export default function Dashboard() {
     }
   }, []);
 
-  // Fetch stats on mount and every 5 minutes
   useEffect(() => {
     fetchDailyStats();
     const interval = setInterval(fetchDailyStats, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchDailyStats]);
 
-  // Update wellness stats to reflect the changes
   const wellnessStats = [
     {
       title: "Mood Score",
@@ -446,12 +419,10 @@ export default function Dashboard() {
     },
   ];
 
-  // Load activities on mount
   useEffect(() => {
     loadActivities();
   }, [loadActivities]);
 
-  // Add these action handlers
   const handleStartTherapy = () => {
     router.push("/therapy/new");
   };
@@ -476,7 +447,6 @@ export default function Dashboard() {
     setShowActivityLogger(true);
   };
 
-  // Add handler for game activities
   const handleGamePlayed = useCallback(
     async (gameName: string, description: string) => {
       try {
@@ -488,7 +458,6 @@ export default function Dashboard() {
           duration: 0,
         });
 
-        // Refresh activities after logging
         loadActivities();
       } catch (error) {
         console.error("Error logging game activity:", error);
@@ -497,7 +466,6 @@ export default function Dashboard() {
     [loadActivities]
   );
 
-  // Simple loading state
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -728,9 +696,7 @@ export default function Dashboard() {
 
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left side - Spans 2 columns */}
             <div className="lg:col-span-3 space-y-6">
-              {/* Anxiety Games - Now directly below Fitbit */}
               <AnxietyGames onGamePlayed={handleGamePlayed} />
             </div>
           </div>

@@ -45,7 +45,7 @@ const chatSessionSchema = new Schema<IChatSession>({
 
   title: {
     type: String,
-    default: ""
+    default: "",
   },
 
   status: {

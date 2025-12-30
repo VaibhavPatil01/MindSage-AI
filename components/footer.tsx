@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
-import { 
-  BrainCircuit, 
-  Heart, 
-  Github, 
-  User, 
+import {
+  BrainCircuit,
+  Heart,
+  Github,
+  User,
   Linkedin,
   Mail,
   Home,
@@ -12,7 +12,7 @@ import {
   BookOpen,
   Shield,
   Sparkles,
-  Code
+  Code,
 } from "lucide-react";
 
 export function Footer() {
@@ -21,7 +21,6 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12 md:px-6">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -32,8 +31,10 @@ export function Footer() {
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold bg-gradient-to-r from-foreground to-primary 
-                              text-transparent bg-clip-text">
+                <h3
+                  className="text-xl font-bold bg-gradient-to-r from-foreground to-primary 
+                              text-transparent bg-clip-text"
+                >
                   MindSage AI
                 </h3>
                 <p className="text-sm text-muted-foreground">
@@ -41,16 +42,17 @@ export function Footer() {
                 </p>
               </div>
             </div>
-            
+
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Your compassionate AI therapist companion. 
-              Providing accessible, empathetic mental health support 
-              through advanced AI technology.
+              Your compassionate AI therapist companion. Providing accessible,
+              empathetic mental health support through advanced AI technology.
             </p>
-            
+
             <div className="text-sm text-muted-foreground">
-  Made with <Heart className="inline w-4 h-4 mx-1 text-primary mb-0.5" /> by Vaibhav Patil
-</div>
+              Made with{" "}
+              <Heart className="inline w-4 h-4 mx-1 text-primary mb-0.5" /> by
+              Vaibhav Patil
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -112,18 +114,33 @@ export function Footer() {
               <Mail className="w-4 h-4" />
               Connect With Us
             </h4>
-            
+
             <p className="text-sm text-muted-foreground">
               Follow our journey in revolutionizing mental health care with AI.
             </p>
-            
+
             <div className="flex items-center gap-4 pt-2">
               {[
-                { href: "https://github.com/VaibhavPatil01", icon: Github, label: "GitHub" },
-                { href: "https://www.linkedin.com/in/vaibhav-patil13", icon: Linkedin, label: "LinkedIn" },
-                { href: "https://vaibhav-portfolio-navy.vercel.app/", icon: User, label: "Portfolio" },
-                { href: "https://github.com/VaibhavPatil01/MindSage-AI", icon: Code, label: "Code" },
-                
+                {
+                  href: "https://github.com/VaibhavPatil01",
+                  icon: Github,
+                  label: "GitHub",
+                },
+                {
+                  href: "https://www.linkedin.com/in/vaibhav-patil13",
+                  icon: Linkedin,
+                  label: "LinkedIn",
+                },
+                {
+                  href: "https://vaibhav-portfolio-navy.vercel.app/",
+                  icon: User,
+                  label: "Portfolio",
+                },
+                {
+                  href: "https://github.com/VaibhavPatil01/MindSage-AI",
+                  icon: Code,
+                  label: "Code",
+                },
               ].map((social) => (
                 <a
                   key={social.label}
@@ -140,7 +157,7 @@ export function Footer() {
                 </a>
               ))}
             </div>
-            
+
             <div className="pt-4">
               <a
                 href="mailto:hello@mindsage.ai"
@@ -157,7 +174,6 @@ export function Footer() {
         {/* Divider */}
         <div className="border-t pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            
             {/* Copyright */}
             <div className="text-center md:text-left">
               <p className="text-sm text-muted-foreground">
@@ -167,7 +183,7 @@ export function Footer() {
                 Empowering mental wellness through ethical AI
               </p>
             </div>
-            
+
             {/* Legal Links */}
             <div className="flex items-center gap-6 text-sm">
               {[
@@ -187,14 +203,15 @@ export function Footer() {
               ))}
             </div>
           </div>
-          
+
           {/* Important Notice */}
           <div className="mt-6 pt-6 border-t text-center">
             <p className="text-xs text-muted-foreground max-w-2xl mx-auto">
               <span className="font-semibold text-foreground">Important:</span>{" "}
-              MindSage AI is an AI assistant and not a replacement for professional 
-              medical advice, diagnosis, or treatment. Always seek the advice of 
-              qualified health providers with any questions you may have.
+              MindSage AI is an AI assistant and not a replacement for
+              professional medical advice, diagnosis, or treatment. Always seek
+              the advice of qualified health providers with any questions you
+              may have.
             </p>
           </div>
         </div>

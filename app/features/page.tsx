@@ -79,8 +79,9 @@ export default function FeaturesPage() {
           Platform Features
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Explore how our platform combines advanced technology with human-centric 
-          design to support your mental wellness journey with unprecedented depth and privacy.
+          Explore how our platform combines advanced technology with
+          human-centric design to support your mental wellness journey with
+          unprecedented depth and privacy.
         </p>
       </motion.div>
 
@@ -112,8 +113,8 @@ export default function FeaturesPage() {
             Begin Your Personalized Journey
           </h2>
           <p className="text-muted-foreground mb-8">
-            Join a community where technology empowers human connection, 
-            and every step forward is celebrated and secured.
+            Join a community where technology empowers human connection, and
+            every step forward is celebrated and secured.
           </p>
           <a
             href="/dashboard"

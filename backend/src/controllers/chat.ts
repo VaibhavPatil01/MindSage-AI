@@ -1,4 +1,3 @@
-// backend/src/controllers/chat.ts
 import { Request, Response } from "express";
 import { ChatSession, IChatSession } from "../models/ChatSession";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -9,21 +8,18 @@ import { User } from "../models/User";
 import { InngestSessionResponse, InngestEvent } from "../types/inngest";
 import { Types } from "mongoose";
 
-// Initialize Gemini API
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY is not set");
 }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Get all chat sessions for the current user
 export const getAllChatSessions = async (req: Request, res: Response) => {
   try {
     console.log("=== GET ALL SESSIONS DEBUG ===");
     console.log("Request user:", req.user);
     console.log("Request headers:", req.headers);
-    
-    // TEMPORARY: For testing, bypass authentication
+
     let userId: Types.ObjectId;
     if (!req.user || !req.user.id) {
       console.log("WARNING: No user in request, using test user");
@@ -34,37 +30,42 @@ export const getAllChatSessions = async (req: Request, res: Response) => {
 
     console.log(`Fetching sessions for user: ${userId}`);
 
-    // Find all sessions for this user
-    const sessions = await ChatSession.find({ 
-      userId: userId 
+    const sessions = await ChatSession.find({
+      userId: userId,
     })
-    .sort({ startTime: -1 }) // Most recent first
-    .select('sessionId startTime status messages title')
-    .lean();
+      .sort({ startTime: -1 })
+      .select("sessionId startTime status messages title")
+      .lean();
 
     console.log(`Found ${sessions.length} sessions for user ${userId}`);
 
-    // Format the response
-    const formattedSessions = sessions.map(session => {
-      const lastMessage = session.messages && session.messages.length > 0 
-        ? session.messages[session.messages.length - 1]
-        : null;
-      
+    const formattedSessions = sessions.map((session) => {
+      const lastMessage =
+        session.messages && session.messages.length > 0
+          ? session.messages[session.messages.length - 1]
+          : null;
+
       return {
         _id: session._id,
         id: session._id,
         sessionId: session.sessionId,
-        title: session.title || `Chat ${new Date(session.startTime).toLocaleDateString()}`,
+        title:
+          session.title ||
+          `Chat ${new Date(session.startTime).toLocaleDateString()}`,
         startTime: session.startTime,
         createdAt: session.startTime,
         updatedAt: session.startTime,
         status: session.status,
         messageCount: session.messages ? session.messages.length : 0,
-        lastMessage: lastMessage ? {
-          content: lastMessage.content?.substring(0, 100) + (lastMessage.content?.length > 100 ? '...' : ''),
-          role: lastMessage.role,
-          timestamp: lastMessage.timestamp
-        } : null,
+        lastMessage: lastMessage
+          ? {
+              content:
+                lastMessage.content?.substring(0, 100) +
+                (lastMessage.content?.length > 100 ? "..." : ""),
+              role: lastMessage.role,
+              timestamp: lastMessage.timestamp,
+            }
+          : null,
         messages: session.messages || [],
       };
     });
@@ -79,24 +80,19 @@ export const getAllChatSessions = async (req: Request, res: Response) => {
   }
 };
 
-// Create a new chat session
 export const createChatSession = async (req: Request, res: Response) => {
   try {
-    // TEMPORARY: Add debug logging
     console.log("=== CREATE SESSION DEBUG ===");
     console.log("Request user:", req.user);
     console.log("Request headers:", req.headers);
     console.log("Request body:", req.body);
-    
-    // TEMPORARY: For testing, bypass authentication
-    // Check if user is authenticated
+
     if (!req.user || !req.user.id) {
       console.log("WARNING: No user in request, using test user");
-      // For testing, create a test user ID
+
       const testUserId = "65d8f1a2b4c9e8a1f4c7b123";
       const userId = new Types.ObjectId(testUserId);
-      
-      // Generate a unique sessionId
+
       const sessionId = uuidv4();
 
       const session = new ChatSession({
@@ -105,7 +101,7 @@ export const createChatSession = async (req: Request, res: Response) => {
         startTime: new Date(),
         status: "active",
         messages: [],
-        title: req.body.title || "New Chat", // Add title support
+        title: req.body.title || "New Chat",
       });
 
       await session.save();
@@ -127,7 +123,6 @@ export const createChatSession = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Generate a unique sessionId
     const sessionId = uuidv4();
 
     const session = new ChatSession({
@@ -136,7 +131,7 @@ export const createChatSession = async (req: Request, res: Response) => {
       startTime: new Date(),
       status: "active",
       messages: [],
-      title: req.body.title || "New Chat", // Add title support
+      title: req.body.title || "New Chat", //
     });
 
     await session.save();
@@ -157,29 +152,26 @@ export const createChatSession = async (req: Request, res: Response) => {
   }
 };
 
-// Send a message in the chat session
 export const sendMessage = async (req: Request, res: Response) => {
   try {
-    // TEMPORARY: Add debug logging
     console.log("=== SEND MESSAGE DEBUG ===");
     console.log("Request params:", req.params);
     console.log("Request body:", req.body);
     console.log("Request user:", req.user);
-    console.log("Content-Type:", req.headers['content-type']);
-    
+    console.log("Content-Type:", req.headers["content-type"]);
+
     const { sessionId } = req.params;
     const { message } = req.body;
-    
+
     if (!message) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "Message is required",
-        receivedBody: req.body 
+        receivedBody: req.body,
       });
     }
-    
+
     console.log(`Processing message for session ${sessionId}: "${message}"`);
 
-    // TEMPORARY: For testing, bypass authentication
     let userId: Types.ObjectId;
     if (!req.user || !req.user.id) {
       console.log("WARNING: No user in request, using test user");
@@ -188,38 +180,32 @@ export const sendMessage = async (req: Request, res: Response) => {
       userId = new Types.ObjectId(req.user.id);
     }
 
-    // Check if sessionId is a MongoDB _id (24 hex characters)
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(sessionId);
-    
+
     let session;
-    
+
     if (isMongoId) {
-      // Try to find by MongoDB _id
       console.log(`Looking for session by MongoDB _id: ${sessionId}`);
       session = await ChatSession.findById(sessionId);
     } else {
-      // Try to find by sessionId (UUID)
       console.log(`Looking for session by sessionId: ${sessionId}`);
       session = await ChatSession.findOne({ sessionId });
     }
-    
+
     if (!session) {
-      console.log(`Session not found by ${isMongoId ? '_id' : 'sessionId'}: ${sessionId}`);
-      return res.status(404).json({ 
+      console.log(
+        `Session not found by ${isMongoId ? "_id" : "sessionId"}: ${sessionId}`
+      );
+      return res.status(404).json({
         message: "Session not found",
-        sessionId 
+        sessionId,
       });
     }
 
-    console.log(`Found session. Session userId: ${session.userId}, Request userId: ${userId}`);
-    
-    // TEMPORARY: Skip user validation for testing
-    // if (session.userId.toString() !== userId.toString()) {
-    //   console.log(`Unauthorized: Session belongs to ${session.userId}, but request from ${userId}`);
-    //   return res.status(403).json({ message: "Unauthorized" });
-    // }
+    console.log(
+      `Found session. Session userId: ${session.userId}, Request userId: ${userId}`
+    );
 
-    // Create Inngest event for message processing
     const event: InngestEvent = {
       name: "therapy/session.message",
       data: {
@@ -248,11 +234,13 @@ export const sendMessage = async (req: Request, res: Response) => {
 
     console.log("Sending message to Inngest:", event.name);
 
-    // Send event to Inngest for logging and analytics
     try {
       await inngest.send(event);
     } catch (inngestError) {
-      console.log("Note: Inngest event failed (this is OK for testing):", inngestError);
+      console.log(
+        "Note: Inngest event failed (this is OK for testing):",
+        inngestError
+      );
     }
 
     // Process the message directly using Gemini
@@ -281,9 +269,9 @@ export const sendMessage = async (req: Request, res: Response) => {
     const cleanAnalysisText = analysisText
       .replace(/```json\n|\n```/g, "")
       .trim();
-    
+
     console.log("Raw analysis response:", analysisText.substring(0, 200));
-    
+
     let analysis;
     try {
       analysis = JSON.parse(cleanAnalysisText);
@@ -294,7 +282,7 @@ export const sendMessage = async (req: Request, res: Response) => {
         themes: ["unknown"],
         riskLevel: 0,
         recommendedApproach: "general support",
-        progressIndicators: []
+        progressIndicators: [],
       };
     }
 
@@ -322,7 +310,6 @@ export const sendMessage = async (req: Request, res: Response) => {
 
     console.log("Generated response:", response.substring(0, 100) + "...");
 
-    // Add message to session history
     session.messages.push({
       role: "user",
       content: message,
@@ -342,21 +329,19 @@ export const sendMessage = async (req: Request, res: Response) => {
       },
     });
 
-    // Update session title if this is the first message
-    if (session.messages.length === 2 && !session.title) { // 2 messages: user + assistant
-      // Extract a short title from the first user message
+    if (session.messages.length === 2 && !session.title) {
       const firstMessage = message.substring(0, 50);
-      session.title = firstMessage.length < message.length ? firstMessage + "..." : firstMessage;
+      session.title =
+        firstMessage.length < message.length
+          ? firstMessage + "..."
+          : firstMessage;
     }
 
-    // Update the session's updatedAt time
-    session.startTime = new Date(); // Using startTime as updatedAt
+    session.startTime = new Date();
 
-    // Save the updated session
     await session.save();
     console.log("Session updated successfully");
 
-    // Return the response
     res.json({
       response,
       message: response,
@@ -370,8 +355,8 @@ export const sendMessage = async (req: Request, res: Response) => {
       debug: {
         sessionId,
         userId: userId.toString(),
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
   } catch (error) {
     console.error("Error in sendMessage:", error);
@@ -380,19 +365,17 @@ export const sendMessage = async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : "Unknown error",
       debug: {
         timestamp: new Date().toISOString(),
-        bodyReceived: req.body
-      }
+        bodyReceived: req.body,
+      },
     });
   }
 };
 
-// Get chat session by sessionId
 export const getChatSession = async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
     console.log(`Getting chat session by sessionId: ${sessionId}`);
-    
-    // TEMPORARY: For testing, bypass authentication
+
     let userId: Types.ObjectId;
     if (!req.user || !req.user.id) {
       console.log("WARNING: No user in request, using test user");
@@ -401,117 +384,113 @@ export const getChatSession = async (req: Request, res: Response) => {
       userId = new Types.ObjectId(req.user.id);
     }
 
-    // Check if sessionId is a MongoDB _id (24 hex characters)
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(sessionId);
-    
+
     let chatSession;
-    
+
     if (isMongoId) {
-      // Try to find by MongoDB _id
       console.log(`Looking for session by MongoDB _id: ${sessionId}`);
       chatSession = await ChatSession.findById(sessionId);
     } else {
-      // Try to find by sessionId (UUID)
       console.log(`Looking for session by sessionId: ${sessionId}`);
       chatSession = await ChatSession.findOne({ sessionId });
     }
-    
+
     if (!chatSession) {
-      console.log(`Chat session not found by ${isMongoId ? '_id' : 'sessionId'}: ${sessionId}`);
-      return res.status(404).json({ 
+      console.log(
+        `Chat session not found by ${
+          isMongoId ? "_id" : "sessionId"
+        }: ${sessionId}`
+      );
+      return res.status(404).json({
         error: "Chat session not found",
-        sessionId 
+        sessionId,
       });
     }
-    
-    console.log(`Found chat session: ${chatSession.sessionId} with ${chatSession.messages?.length || 0} messages`);
-    
-    // TEMPORARY: Skip user validation for testing
-    // if (chatSession.userId.toString() !== userId.toString()) {
-    //   return res.status(403).json({ message: "Unauthorized" });
-    // }
-    
+
+    console.log(
+      `Found chat session: ${chatSession.sessionId} with ${
+        chatSession.messages?.length || 0
+      } messages`
+    );
+
     res.json({
       ...chatSession.toObject(),
-      debug: { 
-        foundBy: isMongoId ? 'mongodb_id' : 'sessionId',
+      debug: {
+        foundBy: isMongoId ? "mongodb_id" : "sessionId",
         requestedId: sessionId,
-        actualSessionId: chatSession.sessionId
-      }
+        actualSessionId: chatSession.sessionId,
+      },
     });
   } catch (error) {
     console.error("Failed to get chat session:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Failed to get chat session",
-      details: error instanceof Error ? error.message : "Unknown error"
+      details: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };
 
-// Get chat history for a session
 export const getChatHistory = async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
     console.log(`Getting chat history for sessionId: ${sessionId}`);
-    
-    // TEMPORARY: For testing, bypass authentication
+
     let userId: Types.ObjectId;
     if (!req.user || !req.user.id) {
-      console.log("WARNING: No user in request, using test user for chat history");
+      console.log(
+        "WARNING: No user in request, using test user for chat history"
+      );
       userId = new Types.ObjectId("65d8f1a2b4c9e8a1f4c7b123");
     } else {
       userId = new Types.ObjectId(req.user.id);
     }
 
-    // Check if sessionId is a MongoDB _id (24 hex characters)
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(sessionId);
-    
+
     let session;
-    
+
     if (isMongoId) {
-      // Try to find by MongoDB _id
       console.log(`Looking for session by MongoDB _id: ${sessionId}`);
       session = await ChatSession.findById(sessionId);
     } else {
-      // Try to find by sessionId (UUID)
       console.log(`Looking for session by sessionId: ${sessionId}`);
       session = await ChatSession.findOne({ sessionId });
     }
-    
+
     if (!session) {
-      console.log(`Session not found by ${isMongoId ? '_id' : 'sessionId'}: ${sessionId}`);
-      return res.status(404).json({ 
+      console.log(
+        `Session not found by ${isMongoId ? "_id" : "sessionId"}: ${sessionId}`
+      );
+      return res.status(404).json({
         message: "Session not found",
         sessionId,
-        searchedBy: isMongoId ? '_id' : 'sessionId'
+        searchedBy: isMongoId ? "_id" : "sessionId",
       });
     }
 
-    console.log(`Session found. Session ID: ${session.sessionId}, MongoDB _id: ${session._id}`);
-    console.log(`User check: session userId ${session.userId}, request userId ${userId}`);
-    
-    // TEMPORARY: Skip user validation for testing
-    // if (session.userId.toString() !== userId.toString()) {
-    //   return res.status(403).json({ message: "Unauthorized" });
-    // }
+    console.log(
+      `Session found. Session ID: ${session.sessionId}, MongoDB _id: ${session._id}`
+    );
+    console.log(
+      `User check: session userId ${session.userId}, request userId ${userId}`
+    );
 
     res.json(session.messages || []);
   } catch (error) {
     console.error("Error fetching chat history:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Error fetching chat history",
-      error: error instanceof Error ? error.message : "Unknown error"
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };
 
-// Get session history (legacy function - keeping for compatibility)
 export const getSessionHistory = async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
     console.log(`Getting history for session: ${sessionId}`);
-    
-    // TEMPORARY: For testing, bypass authentication
+
     let userId: Types.ObjectId;
     if (!req.user || !req.user.id) {
       console.log("WARNING: No user in request, using test user for history");
@@ -520,51 +499,47 @@ export const getSessionHistory = async (req: Request, res: Response) => {
       userId = new Types.ObjectId(req.user.id);
     }
 
-    // Check if sessionId is a MongoDB _id (24 hex characters)
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(sessionId);
-    
+
     let session;
-    
+
     if (isMongoId) {
-      // Try to find by MongoDB _id
       console.log(`Looking for session by MongoDB _id: ${sessionId}`);
       session = await ChatSession.findById(sessionId);
     } else {
-      // Try to find by sessionId (UUID)
       console.log(`Looking for session by sessionId: ${sessionId}`);
       session = await ChatSession.findOne({ sessionId });
     }
-    
+
     if (!session) {
-      console.log(`Session not found by ${isMongoId ? '_id' : 'sessionId'}: ${sessionId}`);
-      
-      return res.status(404).json({ 
+      console.log(
+        `Session not found by ${isMongoId ? "_id" : "sessionId"}: ${sessionId}`
+      );
+
+      return res.status(404).json({
         message: "Session not found",
-        sessionId 
+        sessionId,
       });
     }
 
-    console.log(`Session found. User check: session userId ${session.userId}, request userId ${userId}`);
-    
-    // TEMPORARY: Skip user validation for testing
-    // if (session.userId.toString() !== userId.toString()) {
-    //   return res.status(403).json({ message: "Unauthorized" });
-    // }
+    console.log(
+      `Session found. User check: session userId ${session.userId}, request userId ${userId}`
+    );
 
     res.json({
       messages: session.messages || [],
       startTime: session.startTime,
       status: session.status,
-      debug: { 
+      debug: {
         userId: userId.toString(),
-        foundBy: isMongoId ? 'mongodb_id' : 'sessionId'
-      }
+        foundBy: isMongoId ? "mongodb_id" : "sessionId",
+      },
     });
   } catch (error) {
     console.error("Error fetching session history:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Error fetching session history",
-      error: error instanceof Error ? error.message : "Unknown error"
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };

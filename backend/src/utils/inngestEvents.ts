@@ -23,7 +23,6 @@ export const sendTherapySessionEvent = async (sessionData: any) => {
   }
 };
 
-// Add more event sending functions as needed
 export const sendMoodUpdateEvent = async (moodData: any) => {
   try {
     await inngest.send({

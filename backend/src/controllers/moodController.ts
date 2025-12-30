@@ -3,7 +3,6 @@ import { Mood } from "../models/Mood";
 import { logger } from "../utils/logger";
 import { sendMoodUpdateEvent } from "../utils/inngestEvents";
 
-// Create a new mood entry
 export const createMood = async (
   req: Request,
   res: Response,
@@ -11,8 +10,7 @@ export const createMood = async (
 ) => {
   try {
     const { score, note, context, activities } = req.body;
-    const userId = req.user?._id; // From auth middleware
-
+    const userId = req.user?._id;
     if (!userId) {
       return res.status(401).json({ message: "User not authenticated" });
     }
@@ -29,7 +27,6 @@ export const createMood = async (
     await mood.save();
     logger.info(`Mood entry created for user ${userId}`);
 
-    // Send mood update event to Inngest
     await sendMoodUpdateEvent({
       userId,
       mood: score,

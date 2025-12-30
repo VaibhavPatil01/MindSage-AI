@@ -19,7 +19,6 @@ const SessionSchema = new Schema<ISession>(
   { timestamps: true }
 );
 
-// Index for automatic cleanup of expired sessions
 SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const Session = mongoose.model<ISession>("Session", SessionSchema);

@@ -29,10 +29,8 @@ export const errorHandler = (
     });
   }
 
-  // Log unexpected errors
   logger.error("Unexpected error:", err);
 
-  // Send generic error for unexpected errors
   return res.status(500).json({
     status: "error",
     message: "Something went wrong",

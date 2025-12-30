@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Gamepad2, Flower2, Wind, TreePine, Waves, Music2 } from "lucide-react";
-import { 
+import {
   Card,
   CardContent,
   CardDescription,
@@ -153,8 +153,6 @@ export const AnxietyGames = ({ onGamePlayed }: AnxietyGamesProps) => {
               </motion.div>
             ))}
           </div>
-
-          
         </CardContent>
       </Card>
 

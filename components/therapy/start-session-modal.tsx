@@ -27,14 +27,13 @@ export function StartSessionModal() {
 
   const handleStartSession = async () => {
     try {
-      // Only allow text sessions for now
       if (type !== "text") {
         setError("This session type is coming soon. Please select Text Chat.");
         return;
       }
 
       setOpen(false);
-      // Redirect to the therapy chat page with a static session ID
+
       router.push(`/therapy/343`);
     } catch (error) {
       console.error("Failed to start session:", error);

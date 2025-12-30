@@ -1,4 +1,3 @@
-// Static data for the dashboard
 const staticChatHistory = [
   {
     id: "1",

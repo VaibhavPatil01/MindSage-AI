@@ -2,12 +2,8 @@ import { inngest } from "./client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logger } from "../utils/logger";
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || "AIzaSyACQW1mChxnro1kvSFXQROKOnNMj6dDlVo"
-);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Function to handle chat message processing
 export const processChatMessage = inngest.createFunction(
   {
     id: "process-chat-message",
@@ -38,7 +34,6 @@ export const processChatMessage = inngest.createFunction(
         historyLength: history?.length,
       });
 
-      // Analyze the message using Gemini
       const analysis = await step.run("analyze-message", async () => {
         try {
           const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -62,7 +57,6 @@ export const processChatMessage = inngest.createFunction(
 
           logger.info("Received analysis from Gemini:", { text });
 
-          // Clean the response text to ensure it's valid JSON
           const cleanText = text.replace(/```json\n|\n```/g, "").trim();
           const parsedAnalysis = JSON.parse(cleanText);
 
@@ -70,7 +64,7 @@ export const processChatMessage = inngest.createFunction(
           return parsedAnalysis;
         } catch (error) {
           logger.error("Error in message analysis:", { error, message });
-          // Return a default analysis instead of throwing
+
           return {
             emotionalState: "neutral",
             themes: [],
@@ -81,7 +75,6 @@ export const processChatMessage = inngest.createFunction(
         }
       });
 
-      // Update memory based on analysis
       const updatedMemory = await step.run("update-memory", async () => {
         if (analysis.emotionalState) {
           memory.userProfile.emotionalState.push(analysis.emotionalState);
@@ -95,7 +88,6 @@ export const processChatMessage = inngest.createFunction(
         return memory;
       });
 
-      // If high risk is detected, trigger an alert
       if (analysis.riskLevel > 4) {
         await step.run("trigger-risk-alert", async () => {
           logger.warn("High risk level detected in chat message", {
@@ -105,7 +97,6 @@ export const processChatMessage = inngest.createFunction(
         });
       }
 
-      // Generate therapeutic response
       const response = await step.run("generate-response", async () => {
         try {
           const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -132,12 +123,11 @@ export const processChatMessage = inngest.createFunction(
           return responseText;
         } catch (error) {
           logger.error("Error generating response:", { error, message });
-          // Return a default response instead of throwing
+
           return "I'm here to support you. Could you tell me more about what's on your mind?";
         }
       });
 
-      // Return the response in the expected format
       return {
         response,
         analysis,
@@ -148,7 +138,7 @@ export const processChatMessage = inngest.createFunction(
         error,
         message: event.data.message,
       });
-      // Return a default response instead of throwing
+
       return {
         response:
           "I'm here to support you. Could you tell me more about what's on your mind?",
@@ -165,18 +155,15 @@ export const processChatMessage = inngest.createFunction(
   }
 );
 
-// Function to analyze therapy session content
 export const analyzeTherapySession = inngest.createFunction(
   { id: "analyze-therapy-session" },
   { event: "therapy/session.created" },
   async ({ event, step }) => {
     try {
-      // Get the session content
       const sessionContent = await step.run("get-session-content", async () => {
         return event.data.notes || event.data.transcript;
       });
 
-      // Analyze the session using Gemini
       const analysis = await step.run("analyze-with-gemini", async () => {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
@@ -199,21 +186,17 @@ export const analyzeTherapySession = inngest.createFunction(
         return JSON.parse(text);
       });
 
-      // Store the analysis
       await step.run("store-analysis", async () => {
-        // Here you would typically store the analysis in your database
         logger.info("Session analysis stored successfully");
         return analysis;
       });
 
-      // If there are concerning indicators, trigger an alert
       if (analysis.areasOfConcern?.length > 0) {
         await step.run("trigger-concern-alert", async () => {
           logger.warn("Concerning indicators detected in session analysis", {
             sessionId: event.data.sessionId,
             concerns: analysis.areasOfConcern,
           });
-          // Add your alert logic here
         });
       }
 
@@ -228,15 +211,12 @@ export const analyzeTherapySession = inngest.createFunction(
   }
 );
 
-// Function to generate personalized activity recommendations
 export const generateActivityRecommendations = inngest.createFunction(
   { id: "generate-activity-recommendations" },
   { event: "mood/updated" },
   async ({ event, step }) => {
     try {
-      // Get user's mood history and activity history
       const userContext = await step.run("get-user-context", async () => {
-        // Here you would typically fetch user's history from your database
         return {
           recentMoods: event.data.recentMoods,
           completedActivities: event.data.completedActivities,
@@ -244,7 +224,6 @@ export const generateActivityRecommendations = inngest.createFunction(
         };
       });
 
-      // Generate recommendations using Gemini
       const recommendations = await step.run(
         "generate-recommendations",
         async () => {
@@ -270,9 +249,7 @@ export const generateActivityRecommendations = inngest.createFunction(
         }
       );
 
-      // Store the recommendations
       await step.run("store-recommendations", async () => {
-        // Here you would typically store the recommendations in your database
         logger.info("Activity recommendations stored successfully");
         return recommendations;
       });
@@ -288,7 +265,6 @@ export const generateActivityRecommendations = inngest.createFunction(
   }
 );
 
-// Add the functions to the exported array
 export const functions = [
   processChatMessage,
   analyzeTherapySession,

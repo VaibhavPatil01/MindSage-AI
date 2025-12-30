@@ -7,15 +7,14 @@ import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "@/components/providers";
 
-// Initialize the fonts
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
-  title: "AI Therapy Agent",
-  description: "Your personal AI therapy companion",
+  title: "MindSage AI",
+  description: "Your mental health Companion",
 };
 
 export default function RootLayout({

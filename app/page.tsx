@@ -82,21 +82,24 @@ export default function Home() {
       name: "Vaibhav Patil",
       initials: "VP",
       role: "Software Engineer",
-      feedback: "The platform has been incredibly supportive during stressful periods. It feels like having a thoughtful companion.",
+      feedback:
+        "The platform has been incredibly supportive during stressful periods. It feels like having a thoughtful companion.",
       delay: 0.1,
     },
     {
       name: "Shraddha Patil",
       initials: "SP",
       role: "Clinical Psychologist",
-      feedback: "Impressed by the thoughtful approach to mental wellness. The conversations feel genuine and supportive.",
+      feedback:
+        "Impressed by the thoughtful approach to mental wellness. The conversations feel genuine and supportive.",
       delay: 0.2,
     },
     {
       name: "Shreyan Patil",
       initials: "SP",
       role: "Student",
-      feedback: "Privacy was my main concern, and this platform handles it perfectly. I feel safe sharing openly.",
+      feedback:
+        "Privacy was my main concern, and this platform handles it perfectly. I feel safe sharing openly.",
       delay: 0.3,
     },
   ];
@@ -108,43 +111,46 @@ export default function Home() {
   const currentEmotion =
     emotions.find((em) => Math.abs(emotion - em.value) < 15) || emotions[2];
 
-    const features = [
-      {
-        icon: HeartPulse,
-        title: "Continuous Availability",
-        description: "Consistent emotional support accessible whenever you need meaningful conversation",
-        color: "from-rose-500/20",
-        delay: 0.2,
-      },
-      {
-        icon: Lightbulb,
-        title: "Cognitive Insights",
-        description: "Intelligent analysis that identifies patterns in your emotional landscape and thought processes",
-        color: "from-amber-500/20",
-        delay: 0.4,
-      },
-      {
-        icon: Lock,
-        title: "Verified Confidentiality",
-        description: "End-to-end encrypted dialogues with zero-knowledge architecture ensuring absolute privacy",
-        color: "from-emerald-500/20",
-        delay: 0.6,
-      },
-      {
-        icon: MessageSquareHeart,
-        title: "Research-Grounded Methods",
-        description: "Therapeutic approaches validated by psychological studies and clinical effectiveness data",
-        color: "from-blue-500/20",
-        delay: 0.8,
-      },
-    ];
+  const features = [
+    {
+      icon: HeartPulse,
+      title: "Continuous Availability",
+      description:
+        "Consistent emotional support accessible whenever you need meaningful conversation",
+      color: "from-rose-500/20",
+      delay: 0.2,
+    },
+    {
+      icon: Lightbulb,
+      title: "Cognitive Insights",
+      description:
+        "Intelligent analysis that identifies patterns in your emotional landscape and thought processes",
+      color: "from-amber-500/20",
+      delay: 0.4,
+    },
+    {
+      icon: Lock,
+      title: "Verified Confidentiality",
+      description:
+        "End-to-end encrypted dialogues with zero-knowledge architecture ensuring absolute privacy",
+      color: "from-emerald-500/20",
+      delay: 0.6,
+    },
+    {
+      icon: MessageSquareHeart,
+      title: "Research-Grounded Methods",
+      description:
+        "Therapeutic approaches validated by psychological studies and clinical effectiveness data",
+      color: "from-blue-500/20",
+      delay: 0.8,
+    },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] mt-20 flex flex-col items-center justify-center py-12 px-4">
         <Ripple className="opacity-60" />
-        
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -156,24 +162,26 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm hover:border-primary/40 transition-all duration-300">
             <Sparkles className="w-4 h-4 animate-wave text-primary" />
             <span className="relative text-foreground/90 dark:text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ">
-            AI-Powered Emotional Support Companion
+              AI-Powered Emotional Support Companion
             </span>
           </div>
 
           {/* Enhanced main heading with smoother gradient */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-plus-jakarta tracking-tight">
             <span className="inline-block bg-linear-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent [text-shadow:0_1px_0_rgb(0_0_0/20%)] hover:to-primary transition-all duration-300">
-            Your Journey
+              Your Journey
             </span>
             <br />
             <span className="inline-block mt-2 bg-linear-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
-            Toward Emotional Balance
+              Toward Emotional Balance
             </span>
           </h1>
 
           {/* Enhanced description with better readability */}
           <p className="max-w-150 mx-auto text-base md:text-lg text-muted-foreground leading-relaxed tracking-wide">
-          A modern approach to emotional well-being. Our AI companion helps you reflect, feel understood, and move toward emotional balance at your own pace.
+            A modern approach to emotional well-being. Our AI companion helps
+            you reflect, feel understood, and move toward emotional balance at
+            your own pace.
           </p>
 
           {/* Emotion slider section with enhanced transitions */}
@@ -253,7 +261,6 @@ export default function Home() {
         </motion.div>
 
         {/* Enhanced scroll indicator */}
-        
       </section>
 
       {/* Enhanced Features Grid */}
@@ -308,85 +315,88 @@ export default function Home() {
       </section>
 
       <section className="relative py-16 px-4">
-  <div className="max-w-6xl mx-auto">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      viewport={{ once: true }}
-      className="text-center mb-12"
-    >
-      
-      <h2 className="text-3xl font-bold mb-4 text-primary">
-        What People Are Saying
-      </h2>
-      <p className="text-muted-foreground max-w-xl mx-auto">
-        Hear from individuals who found support through our platform
-      </p>
-    </motion.div>
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold mb-4 text-primary">
+              What People Are Saying
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Hear from individuals who found support through our platform
+            </p>
+          </motion.div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {testimonials.map((testimonial, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: testimonial.delay, duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <Card className="h-full hover:shadow-md transition-shadow duration-300">
-            <div className="p-6">
-              {/* User info */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary font-medium">
-                    {testimonial.initials}
-                  </span>
-                </div>
-                <div>
-                  <h4 className="font-medium">
-                    {testimonial.name}
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.role}
-                  </p>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: testimonial.delay, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full hover:shadow-md transition-shadow duration-300">
+                  <div className="p-6">
+                    {/* User info */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-primary font-medium">
+                          {testimonial.initials}
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{testimonial.name}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {testimonial.role}
+                        </p>
+                      </div>
+                    </div>
 
-              {/* Feedback */}
-              <p className="text-foreground/80 mb-4">
-                "{testimonial.feedback}"
-              </p>
+                    {/* Feedback */}
+                    <p className="text-foreground/80 mb-4">
+                      "{testimonial.feedback}"
+                    </p>
 
-              {/* Simple rating */}
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-4 h-4 text-amber-400 fill-amber-400"
-                  />
-                ))}
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-      ))}
-    </div>
+                    {/* Simple rating */}
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="w-4 h-4 text-amber-400 fill-amber-400"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
 
-    {/* Simple stat */}
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.5 }}
-      viewport={{ once: true }}
-      className="text-center mt-10"
-    >
-      <p className="text-muted-foreground">
-        Designed with <span className="text-primary font-semibold">care, privacy</span> and  <span className="text-primary font-semibold">emotional safety</span> in mind
-      </p>
-    </motion.div>
-  </div>
-</section>
+          {/* Simple stat */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            viewport={{ once: true }}
+            className="text-center mt-10"
+          >
+            <p className="text-muted-foreground">
+              Designed with{" "}
+              <span className="text-primary font-semibold">care, privacy</span>{" "}
+              and{" "}
+              <span className="text-primary font-semibold">
+                emotional safety
+              </span>{" "}
+              in mind
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="sm:max-w-[425px] bg-card/80 backdrop-blur-lg">
@@ -434,7 +444,6 @@ export default function Home() {
                 } else {
                   setShowDialog(false);
                   setCurrentStep(0);
-                  // Here you would navigate to the chat interface
                 }
               }}
               className="relative group px-6"

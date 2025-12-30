@@ -36,7 +36,6 @@ const moodSchema = new Schema<IMood>(
   }
 );
 
-// Index for efficient querying of user's mood history
 moodSchema.index({ userId: 1, timestamp: -1 });
 
 const Mood = mongoose.model<IMood>("Mood", moodSchema);

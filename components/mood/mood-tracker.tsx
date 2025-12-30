@@ -19,7 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
-// Enhanced dummy data
 const moodData = {
   daily: [
     {
@@ -42,7 +41,6 @@ const moodData = {
       energy: 75,
       sleep: 8,
     },
-    // ... other days with similar structure
   ],
   monthly: [
     { week: 1, average: 72, peak: 85, low: 60 },
@@ -108,7 +106,6 @@ export function MoodTracker() {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Enhanced Daily Mood Chart */}
         <div className="space-y-4">
           <div className="h-[200px] flex items-end justify-between">
             {moodData.daily.map((day, index) => (

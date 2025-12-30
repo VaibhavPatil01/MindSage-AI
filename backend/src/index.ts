@@ -17,32 +17,35 @@ import { inngest } from "./inngest/client.js";
 import { functions as inngestFunctions } from "./inngest/functions.js";
 import { logger } from "./utils/logger.js";
 
-// Load environment variables
-
-
-// Create Express app
 const app = express();
 
 // ========== MIDDLEWARE ==========
 // 1. Security
 app.use(helmet());
 
-// 2. CORS - More permissive for debugging
-app.use(cors({
-  origin: ["http://localhost:3001", "https://mind-sage-ai.vercel.app"],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-}));
+// 2. CORS
+app.use(
+  cors({
+    origin: ["http://localhost:3001", "https://mind-sage-ai.vercel.app"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+    ],
+  })
+);
 
-// 3. Body parsers - MUST come before routes
+// 3. Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 4. Request logging
 app.use(morgan("dev"));
 
-// ========== TEST ROUTES (Temporary) ==========
+// ========== TEST ROUTES ==========
 app.get("/api/debug/test", (req, res) => {
   res.json({
     message: "Backend is working!",
@@ -50,8 +53,8 @@ app.get("/api/debug/test", (req, res) => {
     env: {
       NODE_ENV: process.env.NODE_ENV,
       PORT: process.env.PORT,
-      GEMINI_API_KEY: process.env.GEMINI_API_KEY ? "***SET***" : "NOT SET"
-    }
+      GEMINI_API_KEY: process.env.GEMINI_API_KEY ? "***SET***" : "NOT SET",
+    },
   });
 });
 
@@ -60,7 +63,7 @@ app.post("/api/debug/echo", (req, res) => {
   res.json({
     message: "Echo response",
     yourData: req.body,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -72,12 +75,12 @@ app.use(
 
 // ========== HEALTH CHECK ==========
 app.get("/health", (req, res) => {
-  res.json({ 
-    status: "ok", 
+  res.json({
+    status: "ok",
     message: "Server is running",
     service: "MindSage AI Backend",
     version: "1.0.0",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -92,9 +95,9 @@ app.get("/", (req, res) => {
       auth: "/auth/*",
       mood: "/api/mood/*",
       activity: "/api/activity/*",
-      inngest: "/api/inngest"
+      inngest: "/api/inngest",
     },
-    documentation: "See README for API documentation"
+    documentation: "See README for API documentation",
   });
 });
 
@@ -105,7 +108,6 @@ app.use("/api/mood", moodRouter);
 app.use("/api/activity", activityRouter);
 
 // ========== ERROR HANDLING ==========
-// 404 handler
 app.use((req, res, next) => {
   console.log(`[404] Route not found: ${req.method} ${req.url}`);
   res.status(404).json({
@@ -117,8 +119,8 @@ app.use((req, res, next) => {
       "/api/debug/test",
       "/api/debug/echo",
       "/chat/sessions",
-      "/chat/sessions/:id/messages"
-    ]
+      "/chat/sessions/:id/messages",
+    ],
   });
 });
 
@@ -128,27 +130,24 @@ app.use(errorHandler);
 // ========== START SERVER ==========
 const startServer = async () => {
   try {
-    // Connect to MongoDB first
     console.log("Connecting to MongoDB...");
     await connectDB();
     console.log("✅ MongoDB connected successfully");
 
-    // Then start the server
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
       console.log(`
-🚀 ========================================
-🚀 MindSage AI Backend Server Started!
-🚀 ========================================
+========================================
+MindSage AI Backend Server Started!
+========================================
 ✅ Port: ${PORT}
-✅ Environment: ${process.env.NODE_ENV || 'development'}
+✅ Environment: ${process.env.NODE_ENV || "development"}
 ✅ Health Check: http://localhost:${PORT}/health
 ✅ Debug Test: http://localhost:${PORT}/api/debug/test
 ✅ Chat Endpoint: http://localhost:${PORT}/chat/sessions
-✅ Frontend: http://localhost:3000
-🚀 ========================================
+✅ Frontend: http://localhost:3000 ========================================
       `);
-      
+
       logger.info(`Server is running on port ${PORT}`);
     });
   } catch (error) {

@@ -26,13 +26,10 @@ export default function LoginPage() {
     try {
       const response = await loginUser(email, password);
 
-      // Store the token in localStorage
       localStorage.setItem("token", response.token);
 
-      // Update session state
       await checkSession();
 
-      // Wait for state to update before redirecting
       await new Promise((resolve) => setTimeout(resolve, 100));
       router.push("/dashboard");
     } catch (err) {

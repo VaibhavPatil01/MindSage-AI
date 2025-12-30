@@ -3,7 +3,6 @@ import { Activity, IActivity } from "../models/Activity";
 import { logger } from "../utils/logger";
 import { sendActivityCompletionEvent } from "../utils/inngestEvents";
 
-// Log a new activity
 export const logActivity = async (
   req: Request,
   res: Response,
@@ -32,7 +31,6 @@ export const logActivity = async (
     await activity.save();
     logger.info(`Activity logged for user ${userId}`);
 
-    // Send activity completion event to Inngest
     await sendActivityCompletionEvent({
       userId,
       id: activity._id,

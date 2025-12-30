@@ -3,7 +3,7 @@
 export function ExpandableChat() {
   return (
     <div>
-      <p>lorem ipsum</p>
+      <p>Temporary Text</p>
     </div>
   );
 }

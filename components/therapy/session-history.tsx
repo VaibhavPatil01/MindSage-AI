@@ -53,7 +53,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
   const loadSessions = async () => {
     try {
       setIsLoading(true);
-      // Use static data instead of database call
       const transformedSessions = staticSessions
         .map((session) => ({
           ...session,
@@ -74,7 +73,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
       if (onNewSession) {
         await onNewSession();
       } else {
-        // Create a new session with static data
         const newSession = {
           id: `session-${Date.now()}`,
           type: "text",
@@ -91,7 +89,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
     }
   };
 
-  // Move getSessionTitle outside both components to share it
   const getSessionTitle = (session: Session) => {
     if (session.summary) {
       const firstSentence = session.summary.split(".")[0];
@@ -108,7 +105,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
     return `Session on ${date.toLocaleDateString()} at ${timeStr}`;
   };
 
-  // Group sessions by date
   const groupedSessions = sessions.reduce((groups, session) => {
     const date = new Date(session.scheduledTime).toLocaleDateString();
     if (!groups[date]) {
@@ -118,7 +114,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
     return groups;
   }, {} as Record<string, Session[]>);
 
-  // Filter sessions based on search and status
   const filteredGroups = Object.entries(groupedSessions).reduce(
     (acc, [date, sessions]) => {
       const filtered = sessions.filter((session) => {
@@ -158,7 +153,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
     return date;
   };
 
-  // Simple loading state
   if (!mounted) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -249,7 +243,6 @@ export function SessionHistory({ onNewSession }: SessionHistoryProps) {
   );
 }
 
-// Update SessionCard props
 function SessionCard({
   session,
   onClick,
