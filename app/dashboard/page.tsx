@@ -540,7 +540,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Quick Actions Card */}
             <Card className="border-primary/10 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-primary/10 to-transparent" />
               <CardContent className="p-6 relative">
                 <div className="space-y-6">
                   <div className="flex items-center gap-3">
@@ -560,8 +560,8 @@ export default function Dashboard() {
                       variant="default"
                       className={cn(
                         "w-full justify-between items-center p-6 h-auto group/button",
-                        "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90",
-                        "transition-all duration-200 group-hover:translate-y-[-2px]"
+                        "bg-linear-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90",
+                        "group-hover:-translate-y-0.5"
                       )}
                       onClick={handleStartTherapy}
                     >
@@ -587,9 +587,9 @@ export default function Dashboard() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "flex flex-col h-[120px] px-4 py-3 group/mood hover:border-primary/50",
+                          "flex flex-col h-30 px-4 py-3 group/mood hover:border-primary/50",
                           "justify-center items-center text-center",
-                          "transition-all duration-200 group-hover:translate-y-[-2px]"
+                          "group-hover:-translate-y-0.5"
                         )}
                         onClick={() => setShowMoodModal(true)}
                       >
@@ -607,9 +607,9 @@ export default function Dashboard() {
                       <Button
                         variant="outline"
                         className={cn(
-                          "flex flex-col h-[120px] px-4 py-3 group/ai hover:border-primary/50",
+                          "flex flex-col h-30 px-4 py-3 group/ai hover:border-primary/50",
                           "justify-center items-center text-center",
-                          "transition-all duration-200 group-hover:translate-y-[-2px]"
+                          "group-hover:-translate-y-0.5"
                         )}
                         onClick={handleAICheckIn}
                       >
@@ -634,7 +634,7 @@ export default function Dashboard() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Today's Overview</CardTitle>
+                    <CardTitle>Today&apos;s Overview</CardTitle>
                     <CardDescription>
                       Your wellness metrics for{" "}
                       {format(new Date(), "MMMM d, yyyy")}
@@ -739,7 +739,7 @@ export default function Dashboard() {
 
       {/* Mood tracking modal */}
       <Dialog open={showMoodModal} onOpenChange={setShowMoodModal}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-106.25">
           <DialogHeader>
             <DialogTitle>How are you feeling?</DialogTitle>
             <DialogDescription>

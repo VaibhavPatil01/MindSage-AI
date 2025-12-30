@@ -143,15 +143,6 @@ export default function Home() {
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] mt-20 flex flex-col items-center justify-center py-12 px-4">
-        {/* Enhanced background elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div
-            className={`absolute w-[500px] h-[500px] rounded-full blur-3xl top-0 -left-20 transition-all duration-700 ease-in-out
-            bg-gradient-to-r ${currentEmotion.color} to-transparent opacity-60`}
-          />
-          <div className="absolute w-[400px] h-[400px] rounded-full bg-secondary/10 blur-3xl bottom-0 right-0 animate-pulse delay-700" />
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-3xl" />
-        </div>
         <Ripple className="opacity-60" />
         
 
@@ -163,39 +154,38 @@ export default function Home() {
         >
           {/* Enhanced badge with subtle animation */}
           <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm border border-primary/20 bg-primary/5 backdrop-blur-sm hover:border-primary/40 transition-all duration-300">
-            <Waves className="w-4 h-4 animate-wave text-primary" />
-            <span className="relative text-foreground/90 dark:text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ">
-              Your AI Agent Mental Health Companion
+            <Sparkles className="w-4 h-4 animate-wave text-primary" />
+            <span className="relative text-foreground/90 dark:text-foreground after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary/30 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 ">
+            AI-Powered Emotional Support Companion
             </span>
           </div>
 
           {/* Enhanced main heading with smoother gradient */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-plus-jakarta tracking-tight">
-            <span className="inline-block bg-gradient-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent [text-shadow:_0_1px_0_rgb(0_0_0_/_20%)] hover:to-primary transition-all duration-300">
-              Find Peace
+            <span className="inline-block bg-linear-to-r from-primary via-primary/90 to-secondary bg-clip-text text-transparent [text-shadow:0_1px_0_rgb(0_0_0/20%)] hover:to-primary transition-all duration-300">
+            Your Journey
             </span>
             <br />
-            <span className="inline-block mt-2 bg-gradient-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
-              of Mind
+            <span className="inline-block mt-2 bg-linear-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
+            Toward Emotional Balance
             </span>
           </h1>
 
           {/* Enhanced description with better readability */}
-          <p className="max-w-[600px] mx-auto text-base md:text-lg text-muted-foreground leading-relaxed tracking-wide">
-            Experience a new way of emotional support. Our AI companion is here
-            to listen, understand, and guide you through life's journey.
+          <p className="max-w-150 mx-auto text-base md:text-lg text-muted-foreground leading-relaxed tracking-wide">
+          A modern approach to emotional well-being. Our AI companion helps you reflect, feel understood, and move toward emotional balance at your own pace.
           </p>
 
           {/* Emotion slider section with enhanced transitions */}
           <motion.div
-            className="w-full max-w-[600px] mx-auto space-y-6 py-8"
+            className="w-full max-w-150 mx-auto space-y-6 py-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             <div className="space-y-2 text-center">
               <p className="text-sm text-muted-foreground/80 font-medium">
-                Whatever you're feeling, we're here to listen
+                Whatever you&apos;re feeling, we&apos;re here to listen
               </p>
               <div className="flex justify-between items-center px-2">
                 {emotions.map((em) => (
@@ -236,7 +226,7 @@ export default function Home() {
 
             <div className="text-center">
               <p className="text-sm text-muted-foreground animate-pulse">
-                Slide to express how you're feeling today
+                Slide to express how you&apos;re feeling today
               </p>
             </div>
           </motion.div>
@@ -251,13 +241,13 @@ export default function Home() {
             <Button
               size="lg"
               onClick={() => setShowDialog(true)}
-              className="relative group h-12 px-8 rounded-full bg-gradient-to-r from-primary via-primary/90 to-secondary hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500 hover:shadow-xl hover:shadow-primary/30 cursor-pointer"
+              className="relative group h-12 px-8 rounded-full  from-primary via-primary/90 to-secondary hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500 hover:shadow-xl hover:shadow-primary/30 cursor-pointer"
             >
               <span className="relative z-10 font-medium flex items-center gap-2">
                 Begin Your Journey
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </span>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-size-200 bg-pos-0 group-hover:bg-pos-100" />
+              <div className="absolute inset-0 rounded-full bg-linear-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-size-200 bg-pos-0 group-hover:bg-pos-100" />
             </Button>
           </motion.div>
         </motion.div>
@@ -392,7 +382,7 @@ export default function Home() {
       className="text-center mt-10"
     >
       <p className="text-muted-foreground">
-        Trusted by <span className="text-primary font-semibold">2,500+</span> members worldwide
+        Designed with <span className="text-primary font-semibold">care, privacy</span> and  <span className="text-primary font-semibold">emotional safety</span> in mind
       </p>
     </motion.div>
   </div>

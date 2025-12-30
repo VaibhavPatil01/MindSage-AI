@@ -39,7 +39,7 @@ export default function AboutPage() {
           The MindSage Approach
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          We're redefining emotional support by merging sophisticated conversational intelligence 
+          We&apos;re redefining emotional support by merging sophisticated conversational intelligence 
           with the reliability and privacy assurances of decentralized technology frameworks.
         </p>
       </motion.div>

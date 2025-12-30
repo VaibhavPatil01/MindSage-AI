@@ -75,7 +75,7 @@ export default function FeaturesPage() {
         transition={{ duration: 0.5 }}
         className="text-center mb-16"
       >
-        <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-6 bg-linear-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           Platform Features
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -92,7 +92,7 @@ export default function FeaturesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="p-6 h-full hover:shadow-lg transition-shadow duration-300 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <Card className="p-6 h-full hover:shadow-lg transition-shadow duration-300 bg-card/50 backdrop-blur supports-backdrop-filter:bg-background/60">
               <div className="mb-4">{feature.icon}</div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
@@ -117,7 +117,7 @@ export default function FeaturesPage() {
           </p>
           <a
             href="/dashboard"
-            className="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center px-8 py-4 rounded-xl bg-linear-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <Sparkles className="mr-3 w-5 h-5" />
             Discover Your Pathway

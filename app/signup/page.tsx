@@ -140,7 +140,7 @@ export default function SignupPage() {
               </p>
             )}
             <Button
-              className="w-full py-2 text-base rounded-xl font-bold bg-gradient-to-r from-primary to-primary/80 shadow-md hover:from-primary/80 hover:to-primary"
+              className="w-full py-2 text-base rounded-xl font-bold bg-linear-to-r from-primary to-primary/80 shadow-md hover:from-primary/80 hover:to-primary"
               size="lg"
               type="submit"
               disabled={loading}

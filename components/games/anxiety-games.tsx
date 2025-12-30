@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Gamepad2, Flower2, Wind, TreePine, Waves, Music2 } from "lucide-react";
-import {
+import { 
   Card,
   CardContent,
   CardDescription,
@@ -154,14 +154,7 @@ export const AnxietyGames = ({ onGamePlayed }: AnxietyGamesProps) => {
             ))}
           </div>
 
-          {selectedGame && (
-            <div className="mt-6 text-center">
-              <Button className="gap-2" onClick={() => setSelectedGame(null)}>
-                <Gamepad2 className="h-4 w-4" />
-                Start {games.find((g) => g.id === selectedGame)?.title}
-              </Button>
-            </div>
-          )}
+          
         </CardContent>
       </Card>
 

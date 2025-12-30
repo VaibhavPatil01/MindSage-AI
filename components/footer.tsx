@@ -11,7 +11,8 @@ import {
   MessageSquare,
   BookOpen,
   Shield,
-  Sparkles
+  Sparkles,
+  Code
 } from "lucide-react";
 
 export function Footer() {
@@ -61,9 +62,9 @@ export function Footer() {
             <ul className="space-y-3">
               {[
                 { href: "/", label: "Home", icon: Home },
-                { href: "/therapy", label: "AI Therapy", icon: MessageSquare },
-                { href: "/resources", label: "Resources", icon: BookOpen },
-                { href: "/privacy", label: "Privacy & Safety", icon: Shield },
+                { href: "/", label: "AI Therapy", icon: MessageSquare },
+                { href: "/", label: "Resources", icon: BookOpen },
+                { href: "/", label: "Privacy & Safety", icon: Shield },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -87,10 +88,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { href: "/blog", label: "Mental Health Blog" },
-                { href: "/techniques", label: "Therapy Techniques" },
-                { href: "/research", label: "AI Research" },
-                { href: "/faq", label: "FAQ" },
+                { href: "/", label: "Mental Health Blog" },
+                { href: "/", label: "Therapy Techniques" },
+                { href: "/", label: "AI Research" },
+                { href: "/", label: "FAQ" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -118,9 +119,10 @@ export function Footer() {
             
             <div className="flex items-center gap-4 pt-2">
               {[
-                { href: "https://github.com", icon: Github, label: "GitHub" },
-                { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
-                { href: "https://twitter.com", icon: User, label: "Twitter" },
+                { href: "https://github.com/VaibhavPatil01", icon: Github, label: "GitHub" },
+                { href: "https://www.linkedin.com/in/vaibhav-patil13", icon: Linkedin, label: "LinkedIn" },
+                { href: "https://vaibhav-portfolio-navy.vercel.app/", icon: User, label: "Portfolio" },
+                { href: "https://github.com/VaibhavPatil01/MindSage-AI", icon: Code, label: "Code" },
                 
               ].map((social) => (
                 <a
